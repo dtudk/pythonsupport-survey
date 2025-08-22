@@ -1,0 +1,236 @@
+/* Survey form styles */
+.survey-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: block;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  ring-width: 2px;
+  ring-color: #ef4444;
+  border-color: #ef4444;
+}
+
+@media (min-width: 640px) {
+  .form-input {
+    padding: 0.75rem;
+  }
+}
+
+/* Role and workshop group */
+.role-workshop-group {
+  display: grid;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .role-workshop-group {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.role-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .role-buttons {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+  }
+}
+
+.role-label {
+  display: inline-flex;
+  align-items: center;
+  color: #374151;
+}
+
+.role-label input {
+  margin-right: 0.5rem;
+}
+
+/* Workshop fieldset */
+.workshop-fieldset {
+  order: 3;
+}
+
+@media (min-width: 640px) {
+  .workshop-fieldset {
+    order: 3;
+  }
+}
+
+.workshop-legend {
+  display: block;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.workshop-options {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .workshop-options {
+    justify-content: flex-start;
+  }
+}
+
+/* Student number wrapper */
+.student-wrapper {
+  order: 2;
+}
+
+@media (min-width: 640px) {
+  .student-wrapper {
+    order: 2;
+  }
+}
+
+.student-input-group {
+  display: flex;
+}
+
+.student-prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  color: #374151;
+  background-color: #e5e7eb;
+  border: 1px solid #d1d5db;
+  border-right: none;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.student-input {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 0 0.25rem 0.25rem 0;
+  padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .student-input {
+    padding: 0.75rem;
+  }
+}
+
+/* Username wrapper */
+.username-wrapper {
+  order: 2;
+}
+
+@media (min-width: 640px) {
+  .username-wrapper {
+    order: 2;
+  }
+}
+
+/* Satisfaction rating */
+.satisfaction-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  place-items: center;
+}
+
+@media (min-width: 640px) {
+  .satisfaction-grid {
+    gap: 1rem;
+  }
+}
+
+.satisfaction-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.satisfaction-radio {
+  margin-bottom: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .satisfaction-radio {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.satisfaction-face {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .satisfaction-face {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* Course input */
+.course-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .course-input {
+    padding: 0.75rem;
+  }
+}
+
+/* Submit button */
+.submit-button {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #dc2626;
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

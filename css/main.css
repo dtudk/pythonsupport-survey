@@ -1,0 +1,162 @@
+/* Main layout and base styles */
+body {
+  background-color: #f9fafb;
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header and menu button */
+header {
+  position: relative;
+  z-index: 60;
+}
+
+#openSidebar {
+  position: relative;
+  z-index: 61;
+}
+
+/* Page containers */
+.page-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.content-card {
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  transform: scale(1.1);
+  transform-origin: center;
+}
+
+@media (min-width: 768px) {
+  .content-card {
+    max-width: 56rem;
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .content-card {
+    max-width: 70rem;
+    padding: 3rem;
+  }
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.opacity-40 {
+  opacity: 0.4;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+/* Form elements */
+.form-radio {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: #ef4444;
+  border-color: #d1d5db;
+}
+
+.form-radio:focus {
+  ring-width: 2px;
+  ring-color: #ef4444;
+}
+
+/* Custom focus styles for inputs */
+.input-focus:focus {
+  outline: none;
+  ring-width: 2px;
+  ring-color: #ef4444;
+  border-color: #ef4444;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #dc2626;
+}
+
+.btn-secondary {
+  background-color: white;
+  border: 1px solid #ef4444;
+  color: #dc2626;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #fef2f2;
+}
+
+.btn-small {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Building selection buttons */
+.building-button {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  text-align: left;
+  background: white;
+  cursor: pointer;
+}
+
+.building-button:hover {
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+}
+
+.building-title {
+  font-weight: 600;
+  color: #374151;
+}
+
+.building-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}

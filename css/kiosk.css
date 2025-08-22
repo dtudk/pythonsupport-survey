@@ -1,0 +1,164 @@
+/* Kiosk Mode Styles */
+.kiosk-mode {
+  /* Disable text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  /* Disable highlighting */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Prevent overscroll */
+  overscroll-behavior: none;
+  
+  /* Hide scrollbars */
+  overflow: hidden;
+}
+
+.kiosk-mode * {
+  /* Disable text selection on all elements */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Allow text selection only on form inputs */
+.kiosk-mode input,
+.kiosk-mode textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* Kiosk layout adjustments */
+.kiosk-mode .main-wrapper {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kiosk-mode .page-container {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem 1rem 0;
+  overflow: hidden;
+}
+
+.kiosk-mode .content-card {
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  transform: none; /* Remove scaling in kiosk mode */
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+/* Compact form layout for kiosk mode */
+.kiosk-mode .survey-form {
+  gap: 1rem;
+}
+
+.kiosk-mode .form-group {
+  margin-bottom: 0;
+}
+
+.kiosk-mode .role-workshop-group {
+  gap: 0.75rem;
+}
+
+.kiosk-mode .satisfaction-grid {
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+/* Larger touch targets for tablets */
+.kiosk-mode button {
+  min-height: 48px;
+  min-width: 48px;
+  font-size: 1.1rem;
+}
+
+/* Back to Setup button styling for better visibility */
+#backToSetupBtn {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+}
+
+
+.kiosk-mode input,
+.kiosk-mode select {
+  min-height: 48px;
+  font-size: 1.1rem;
+  padding: 0.75rem;
+}
+
+.kiosk-mode .satisfaction-face {
+  width: 3rem;
+  height: 3rem;
+}
+
+.kiosk-mode .satisfaction-option {
+  padding: 0.5rem;
+}
+
+/* Hide elements in kiosk mode */
+.kiosk-mode .kiosk-hide {
+  display: none !important;
+}
+
+/* Hide back to setup button in kiosk mode - users are locked into survey flow */
+.kiosk-mode #backToSetupBtn {
+  display: none !important;
+}
+
+/* Fullscreen styles */
+.kiosk-mode:fullscreen {
+  background: #f9fafb;
+}
+
+.kiosk-mode:-webkit-full-screen {
+  background: #f9fafb;
+}
+
+.kiosk-mode:-moz-full-screen {
+  background: #f9fafb;
+}
+
+/* Prevent zoom on iOS */
+.kiosk-mode input[type="text"],
+.kiosk-mode input[type="number"],
+.kiosk-mode textarea,
+.kiosk-mode select {
+  font-size: 16px; /* Prevents zoom on iOS */
+}
+
+/* Kiosk message overlay */
+.kiosk-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.kiosk-overlay.hidden {
+  display: none;
+}

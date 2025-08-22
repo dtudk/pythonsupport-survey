@@ -1,0 +1,93 @@
+<!-- Survey Form Component -->
+<div id="surveyPage" class="page-container hidden">
+  <div class="content-card">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-700">Student Satisfaction Survey</h2>
+    </div>
+    
+    <form id="surveyForm" class="survey-form">
+      <!-- Role + Student/Username + Workshop -->
+      <div id="roleWorkshopGroup" class="role-workshop-group">
+        <!-- Roles -->
+        <div class="role-buttons order-1 sm:order-1 sm:col-span-2">
+          <label class="role-label">
+            <input type="radio" name="role" value="student" class="form-radio" checked />
+            <span class="ml-2">Student</span>
+          </label>
+          <label class="role-label">
+            <input type="radio" name="role" value="employee" class="form-radio" />
+            <span class="ml-2">PhD&nbsp;/&nbsp;Employee</span>
+          </label>
+        </div>
+
+        <!-- Workshop -->
+        <div class="workshop-fieldset">
+          <fieldset>
+            <legend class="workshop-legend">Attended workshop?</legend>
+            <div class="workshop-options">
+              <label class="role-label">
+                <input type="radio" id="workshop_yes" name="workshop" value="yes" class="form-radio" />
+                <span class="ml-2">Yes</span>
+              </label>
+              <label class="role-label">
+                <input type="radio" id="workshop_no" name="workshop" value="no" class="form-radio" />
+                <span class="ml-2">No</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Student number -->
+        <div id="studentWrapper" class="student-wrapper">
+          <label class="form-label" for="student_number">Student Number:</label>
+          <div class="student-input-group">
+            <span class="student-prefix">s</span>
+            <input id="student_number" name="student_number" type="text" inputmode="numeric" pattern="[0-9]{6}" placeholder="e.g. 123456" title="Enter 6 digits only. Example: s123456 (type only the digits after 's')" class="student-input input-focus" required/>
+          </div>
+        </div>
+
+        <!-- Username (employee) -->
+        <div id="usernameWrapper" class="username-wrapper hidden">
+          <label class="form-label" for="dtu_username">DTU Credentials:</label>
+          <input id="dtu_username" name="dtu_username" type="text" pattern="[A-Za-z]{3,20}" placeholder="e.g. manufer" class="form-input input-focus"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <span class="form-label">Satisfaction (1 to 5):</span>
+        <div class="satisfaction-grid">
+          <label class="satisfaction-option">
+            <input type="radio" name="satisfaction" value="1" class="satisfaction-radio form-radio" required />
+            <img src="assets/images/face1.png" alt="Satisfaction level 1" class="satisfaction-face" />
+          </label>
+          <label class="satisfaction-option">
+            <input type="radio" name="satisfaction" value="2" class="satisfaction-radio form-radio" />
+            <img src="assets/images/face2.png" alt="Satisfaction level 2" class="satisfaction-face" />
+          </label>
+          <label class="satisfaction-option">
+            <input type="radio" name="satisfaction" value="3" class="satisfaction-radio form-radio" />
+            <img src="assets/images/face3.png" alt="Satisfaction level 3" class="satisfaction-face" />
+          </label>
+          <label class="satisfaction-option">
+            <input type="radio" name="satisfaction" value="4" class="satisfaction-radio form-radio" />
+            <img src="assets/images/face4.png" alt="Satisfaction level 4" class="satisfaction-face" />
+          </label>
+          <label class="satisfaction-option">
+            <input type="radio" name="satisfaction" value="5" class="satisfaction-radio form-radio" />
+            <img src="assets/images/face5.png" alt="Satisfaction level 5" class="satisfaction-face" />
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="course_number">Course Number or Name (optional):</label>
+        <input id="course_number" name="course_number" list="courses" type="text" placeholder="e.g. 01003 - Mathematics 1a" class="course-input input-focus"/>
+        <datalist id="courses"></datalist>
+      </div>
+
+      <button id="submitButton" type="submit" class="submit-button">
+        Submit Survey
+      </button>
+    </form>
+  </div>
+</div>

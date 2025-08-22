@@ -1,0 +1,146 @@
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 20rem;
+  width: 100%;
+  margin: 0 1rem;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.modal-message {
+  margin-bottom: 1rem;
+  color: #6b7280;
+}
+
+.modal-input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.modal-input:focus {
+  outline: none;
+  ring-width: 2px;
+  ring-color: #ef4444;
+  border-color: #ef4444;
+}
+
+.modal-button {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-button:hover {
+  background-color: #dc2626;
+}
+
+.modal-error {
+  font-size: 0.875rem;
+  color: #dc2626;
+  margin-top: 0.5rem;
+}
+
+/* Login modal specific */
+#loginModal {
+  background: white;
+}
+
+/* QR Modal specific */
+.qr-modal-content {
+  max-width: 28rem;
+}
+
+.qr-quick-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.qr-quick-button {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.qr-quick-button:hover {
+  background-color: #e5e7eb;
+}
+
+.qr-result {
+  margin-top: 1rem;
+}
+
+.qr-canvas, .qr-image {
+  margin: 0 auto 0.75rem;
+}
+
+.qr-link-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qr-link-input {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.qr-copy-button {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.qr-copy-button:hover {
+  background-color: #e5e7eb;
+}

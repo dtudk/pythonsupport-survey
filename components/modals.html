@@ -1,0 +1,79 @@
+<!-- Modals Component -->
+
+<!-- Supporter Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2 class="modal-title">Supporter Login</h2>
+    <input id="accessCodeInput" type="password" placeholder="Enter daily code" class="modal-input" />
+    <button id="codeSubmit" class="modal-button">Enter</button>
+    <p id="loginError" class="modal-error hidden">Incorrect code. Try again.</p>
+  </div>
+</div>
+
+<!-- Thank You Modal -->
+<div id="thankYouModal" class="modal hidden">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <h2 class="modal-title">We value your time</h2>
+    <p class="modal-message">Thank you for your feedback!</p>
+    <button id="closeModal" class="modal-button">Close</button>
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal hidden">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="flex justify-center mb-3">
+      <svg class="w-16 h-16 text-red-600" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 511.999 463.377">
+        <path d="M289.639 9.137c12.411 7.25 23.763 18.883 33.037 34.913l.97 1.813 1.118 1.941 174.174 302.48c33.712 56.407-1.203 113.774-66.174 112.973v.12H73.485c-.895 0-1.78-.04-2.657-.112-59.104-.799-86.277-54.995-61.909-106.852.842-1.805 1.816-3.475 2.816-5.201L189.482 43.959l-.053-.032c9.22-15.786 20.717-27.457 33.411-34.805C243.788-3 268.711-3.086 289.639 9.137zM255.7 339.203c13.04 0 23.612 10.571 23.612 23.612 0 13.041-10.572 23.613-23.612 23.613-13.041 0-23.613-10.572-23.613-23.613s10.572-23.612 23.613-23.612zm17.639-35.379c-.794 19.906-34.506 19.931-35.278-.006-3.41-34.108-12.129-111.541-11.853-143.591.284-9.874 8.469-15.724 18.939-17.955 3.231-.686 6.781-1.024 10.357-1.019 3.595.008 7.153.362 10.387 1.051 10.818 2.303 19.309 8.392 19.309 18.446l-.043 1.005-11.818 142.069z"/>
+      </svg>
+    </div>
+    <h2 id="errorTitle" class="modal-title">We couldn't submit your response</h2>
+    <p class="error-message modal-message">An error occurred while submitting your response.</p>
+    <button id="closeErrorModal" class="modal-button">Try Again</button>
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div id="qrModal" class="modal hidden">
+  <div class="modal-overlay"></div>
+  <div class="modal-content qr-modal-content">
+    <h3 class="modal-title">Generate QR for Building</h3>
+
+    <div class="space-y-3 mb-4">
+      <p class="text-sm text-gray-600">Quick select:</p>
+      <div class="qr-quick-buttons">
+        <button type="button" class="qr-quick qr-quick-button btn-302" data-building="302">302</button>
+        <button type="button" class="qr-quick qr-quick-button btn-358" data-building="358">358</button>
+        <button type="button" class="qr-quick qr-quick-button btn-324" data-building="324">324</button>
+      </div>
+
+      <div class="form-group">
+        <label for="qrBuilding" class="form-label">Or enter any building (000–990):</label>
+        <input id="qrBuilding" type="number" min="0" max="990" placeholder="e.g. 324" class="form-input input-focus"/>
+      </div>
+
+      <label class="role-label">
+        <input id="qrWorkshopDay" type="checkbox" class="h-4 w-4 text-red-500 border-gray-300 rounded">
+        <span class="ml-2">Preselect Workshop</span>
+      </label>
+    </div>
+
+    <div class="flex items-center gap-2 mb-4">
+      <button id="qrCreate" class="btn-primary">Create QR</button>
+      <button id="qrClose" class="btn-secondary">Close</button>
+    </div>
+
+    <p id="qrInlineError" class="modal-error mb-3 hidden"></p>
+
+    <div id="qrResult" class="qr-result hidden">
+      <canvas id="qrCanvas" class="qr-canvas"></canvas>
+      <img id="qrImg" class="qr-image hidden" alt="QR code"/>
+      <div class="qr-link-container">
+        <input id="qrLink" type="text" readonly class="qr-link-input" />
+        <button id="qrCopy" class="qr-copy-button">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
