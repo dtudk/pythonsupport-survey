@@ -160,3 +160,6 @@ header {
   font-size: 0.875rem;
   color: #6b7280;
 }
+
+/* Show the workshop header button only in tablet/Discord modes */
+.workshop-header-btn { display: none; }

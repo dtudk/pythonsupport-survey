@@ -176,3 +176,8 @@
 .compact-mode #kioskToggle {
   display: none !important;
 }
+
+.compact-mode .workshop-header-btn {
+  display: inline-flex;
+  align-items: center;
+}

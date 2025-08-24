@@ -3,6 +3,14 @@
   <div class="content-card">
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-2xl font-bold text-gray-700">Student Satisfaction Survey</h2>
+      <button
+        id="workshopHeaderBtn"
+        type="button"
+        class="btn-secondary btn-small workshop-header-btn"
+        onclick="toggleWorkshopHeader()"
+        aria-label="Toggle workshop attendance">
+        Attended a workshop?
+      </button>
     </div>
     
     <form id="surveyForm" class="survey-form">
@@ -89,5 +97,35 @@
         Submit Survey
       </button>
     </form>
+
+    <!-- Header Workshop Toggle Script -->
+    <script>
+      (function () {
+        function updateBtn() {
+          var btn = document.getElementById('workshopHeaderBtn');
+          if (!btn) return;
+          var yes = document.getElementById('workshop_yes');
+          var no  = document.getElementById('workshop_no');
+          if (!yes || !no) return;
+          var state = yes.checked ? '(Yes)' : '(No)';
+          btn.textContent = 'Attended a workshop? ' + state;
+        }
+        window.toggleWorkshopHeader = function () {
+          var yes = document.getElementById('workshop_yes');
+          var no  = document.getElementById('workshop_no');
+          if (!yes || !no) return;
+          var makeYes = !yes.checked;
+          yes.checked = makeYes;
+          no.checked  = !makeYes;
+          updateBtn();
+        };
+        // Initialize label once DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', updateBtn, { once: true });
+        } else {
+          updateBtn();
+        }
+      })();
+    </script>
   </div>
 </div>
