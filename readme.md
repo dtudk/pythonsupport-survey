@@ -11,7 +11,7 @@ A web-based student satisfaction survey application for DTU Python Support servi
 ├── assets/                 # Satisfaction rating images (face1-5.png)
 ├── css/                    # Stylesheets (main, sidebar, modal, survey, compact, kiosk)
 ├── js/                     # JavaScript modules (app, auth, building, config, errors, kiosk, links, qr, survey, bundle)
-├── components/             # HTML templates (analytics, building-selection, modals, sidebar, survey-form)
+├── partials/               # HTML templates (analytics, building-selection, modals, sidebar, survey-form)
 ├── data/courses.csv        # Course data for autocomplete
 └── readme.md               # Documentation
 ```
