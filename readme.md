@@ -8,7 +8,7 @@ A web-based student satisfaction survey application for DTU Python Support servi
 
 ```
 ├── index.html              # Main survey application
-├── assets/images/          # Satisfaction rating images (face1-5.png)
+├── assets/                 # Satisfaction rating images (face1-5.png)
 ├── css/                    # Stylesheets (main, sidebar, modal, survey, compact, kiosk)
 ├── js/                     # JavaScript modules (app, auth, building, config, errors, kiosk, links, qr, survey, bundle)
 ├── components/             # HTML templates (analytics, building-selection, modals, sidebar, survey-form)
@@ -19,13 +19,12 @@ A web-based student satisfaction survey application for DTU Python Support servi
 ## Features
 
 - Building selection interface
-- Student/Employee role selection  
+- One-time link generation for our Discord help
+- QR code generation for static URLs
+- Student/Employee role selection
 - Satisfaction rating with visual feedback
 - Course autocomplete from CSV data
-- One-time link generation
-- QR code generation for static URLs
-- Analytics dashboard integration
-- Compact Mode: Tablet-optimized view for one-time links and QR code access
+- Analytics dashboard integration with PowerBI
 - Kiosk/Tablet Mode: Fullscreen locked mode for public tablet deployment
 
 ## Usage
@@ -44,7 +43,7 @@ The application uses password-based authentication for supporters, with automati
 - One-time Links (`?t=TOKEN` or `?token=TOKEN`): Bypass authentication, direct access to survey
 - QR Code Access (`?b=BUILDING`): Bypass authentication, direct access to survey
 
-Both one-time links and QR code access automatically enable compact mode for an optimized tablet experience.
+Both one-time links and QR code access automatically enable compact mode for an optimized experience.
 
 ## Architecture
 
@@ -104,10 +103,10 @@ Kiosk mode provides secure tablet deployment in public spaces.
 - Prevents common keyboard shortcuts (F5, F11, F12, Ctrl+R, etc.)
 - Blocks browser navigation and developer tools access
 - Disables page refresh and tab switching
-
+  
 ### Exit Mechanisms for Administrators
 
-- Keyboard Shortcut: `Ctrl+Shift+Alt+E` - Secret key combination
+- Keyboard Shortcut: Adding "?reset=1" to the website
 - Hidden Tap Zone: Click/tap the top-left corner 5 times within 3 seconds
 - Temporary Exit Button: A red "Exit Kiosk" button appears after tap activation (auto-hides after 10 seconds)
 
