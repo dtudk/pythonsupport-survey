@@ -1,0 +1,185 @@
+<style>
+  /* Supporter (pre-tablet) view only — make survey compact like the old centered card */
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard { max-width: 60rem; }
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard h2 { font-size: 1.5rem; line-height: 2rem; /* ~text-2xl */ }
+
+  /* Normalize all the previously enlarged text sizes back to base in supporter view */
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard .text-lg,
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard .md\:text-xl { font-size: 1rem; line-height: 1.5rem; }
+
+  /* Inputs and radios spacing in supporter view */
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard input[type="text"],
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard input[list],
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard input[type="number"] { padding: .5rem .75rem; font-size: 1rem; }
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard .form-radio { width: 1rem; height: 1rem; }
+
+  /* The leading "s" box and submit button compact sizing */
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard .prefix-s { padding-left: .75rem; padding-right: .75rem; font-size: 1rem; }
+  body:not(.student-flow):not(.kiosk-mode) #surveyPage #surveyCard #submitButton { padding: .75rem 1.5rem; font-size: 1rem; }
+
+  /* Token/QR student-flow (non-kiosk) — keep narrow flat layout */
+  body.student-flow:not(.kiosk-mode) #surveyPage #surveyCard { max-width: 44rem; }
+
+  /* === Kiosk / Tablet mode — force LARGE width like building selector === */
+  body.kiosk-mode #surveyPage { padding: 1rem !important; min-height: 100vh !important; }
+  body.kiosk-mode #surveyCard{
+    max-width: min(96vw, 72rem) !important; /* ~xl:max-w-6xl, fill most of tablet width */
+    width: 100% !important;
+    margin: 1rem auto !important;
+    border-radius: 0.75rem !important; /* rounded card */
+    box-shadow: 0 10px 25px rgba(17,24,39,.12) !important;
+    padding: 2rem 2.5rem !important; /* p-8 md:p-10 feel */
+  }
+  /* Kiosk — +20% typography scale */
+  body.kiosk-mode #surveyCard { font-size: 1.2rem; }
+  body.kiosk-mode #surveyCard h2 { font-size: 2.4rem !important; line-height: 1.2; }
+  body.kiosk-mode #surveyCard .text-lg { font-size: 1.35rem !important; }
+  body.kiosk-mode #surveyCard .md\:text-xl { font-size: 1.5rem !important; }
+  body.kiosk-mode #surveyCard .form-radio { width: 1.5rem; height: 1.5rem; }
+  body.kiosk-mode #surveyCard .prefix-s { font-size: 1.2rem !important; padding-left: 1rem; padding-right: 1rem; }
+  body.kiosk-mode #surveyPage #roleWorkshopGroup .wk-inline > span { white-space: nowrap; }
+
+  /* Align "Attended workshop?" inline with Yes/No and flush to the right on ≥sm */
+  @media (min-width: 640px) {
+    #surveyPage #roleWorkshopGroup .wk-inline {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      flex-wrap: nowrap;         /* keep all controls on one line */
+    }
+    #surveyPage #roleWorkshopGroup .wk-inline > span {
+      white-space: nowrap;       /* prevent "Attended workshop?" from breaking */
+    }
+  }
+
+  /* Tablet: allow inner scrolling and reserve space for keyboard */
+  body.kiosk-mode #surveyPage { 
+    overflow: auto !important; 
+    -webkit-overflow-scrolling: touch; 
+    overscroll-behavior: contain; 
+  }
+  body.kiosk-mode #surveyPage input,
+  body.kiosk-mode #surveyPage select,
+  body.kiosk-mode #surveyPage textarea {
+    scroll-margin-top: 12vh; /* ensure focused field centers above keyboard */
+  }
+  /* Spacers (top & bottom) shown only in kiosk to prevent keyboard overlap and give scroll room */
+  .kiosk-pad, .kiosk-pad-top { display: none; }
+  .kiosk-mode .kiosk-pad, .kiosk-mode .kiosk-pad-top { 
+    display: block; 
+    height: 28.6vh;   /* 30% more than the previous 22vh */
+    min-height: 208px; /* 30% more than the previous 160px */
+  }
+
+  /* Touch devices: custom course suggestion popover (JS toggles visibility) */
+  .suggest-wrap { position: relative; }
+  #courseSuggest { 
+    display: none; 
+    position: absolute; 
+    left: 0; right: 0; 
+    margin-top: .25rem; 
+    background: #fff; 
+    border: 1px solid #d1d5db; 
+    border-radius: .5rem; 
+    box-shadow: 0 10px 25px rgba(17,24,39,.12); 
+    max-height: 14rem; 
+    overflow: auto; 
+    z-index: 40;
+  }
+  #courseSuggest.show { display: block; }
+  #courseSuggest .item { padding: .625rem .75rem; cursor: pointer; }
+  #courseSuggest .item:hover { background: #f9fafb; }
+</style>
+<div id="surveyPage" class="px-2 sm:px-4 grid place-items-center hidden" style="min-height: calc(100vh - 4rem);">
+  <div id="surveyCard" class="w-full max-w-5xl xl:max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
+    <div class="kiosk-pad-top"></div>
+    <div class="flex items-center justify-center mb-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-700">Student Satisfaction Survey</h2>
+    </div>
+
+    <form id="surveyForm" class="space-y-6">
+      <div id="roleWorkshopGroup" class="grid gap-3 sm:grid-cols-3 sm:gap-6 items-start">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 order-1 sm:order-1 sm:col-span-2">
+          <label class="inline-flex items-center text-gray-700 text-lg">
+            <input type="radio" name="role" value="student" class="form-radio" checked />
+            <span class="ml-2">Student</span>
+          </label>
+          <label class="inline-flex items-center text-gray-700 text-lg">
+            <input type="radio" name="role" value="employee" class="form-radio" />
+            <span class="ml-2">PhD&nbsp;/&nbsp;Employee</span>
+          </label>
+        </div>
+
+        <div class="order-3 sm:order-2">
+          <div class="wk-inline">
+            <span class="block text-gray-700 font-medium text-lg">Attended workshop?</span>
+            <label class="inline-flex items-center text-gray-700 text-lg">
+              <input type="radio" id="workshop_yes" name="workshop" value="yes" class="form-radio h-5 w-5 text-red-500 border-gray-300" />
+              <span class="ml-2">Yes</span>
+            </label>
+            <label class="inline-flex items-center text-gray-700 text-lg">
+              <input type="radio" id="workshop_no" name="workshop" value="no" class="form-radio h-5 w-5 text-red-500 border-gray-300" />
+              <span class="ml-2">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="studentWrapper" class="order-2 sm:order-3 sm:col-span-3">
+          <label class="block text-gray-700 mb-2 font-medium text-lg" for="student_number">Student Number:</label>
+          <div class="flex">
+            <span class="inline-flex items-center px-3 text-lg text-gray-700 bg-gray-200 border border-r-0 border-gray-300 rounded-l prefix-s">s</span>
+            <input id="student_number" name="student_number" type="text" inputmode="numeric" enterkeyhint="next" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="e.g. 123456" title="Enter 6 digits only. Example: s123456 (type only the digits after ‘s’)" class="flex-1 border border-gray-300 p-3 sm:p-4 text-lg rounded-r focus:ring-2 focus:ring-red-500 focus:border-red-500" required/>
+          </div>
+        </div>
+
+        <div id="usernameWrapper" class="hidden order-2 sm:order-3 sm:col-span-3">
+          <label class="block text-gray-700 mb-2 font-medium text-lg" for="dtu_username">DTU Credentials:</label>
+          <input id="dtu_username" name="dtu_username" type="text" pattern="[A-Za-z]{3,20}" placeholder="e.g. manufer" enterkeyhint="next" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full border border-gray-300 p-3 sm:p-4 text-lg rounded focus:ring-2 focus:ring-red-500 focus:border-red-500"/>
+        </div>
+      </div>
+
+      <div>
+        <span class="block text-gray-700 mb-3 font-medium text-lg md:text-xl">Satisfaction (1 to 5):</span>
+        <div class="grid grid-cols-5 gap-2 sm:gap-4 place-items-center">
+          <label class="flex flex-col items-center text-gray-600 cursor-pointer">
+            <input type="radio" name="satisfaction" value="1" class="form-radio mb-1 sm:mb-2" required />
+            <img src="./assets/face1.png" alt="Satisfaction level 1" class="w-9 h-9 sm:w-10 sm:h-10" />
+          </label>
+          <label class="flex flex-col items-center text-gray-600 cursor-pointer">
+            <input type="radio" name="satisfaction" value="2" class="form-radio mb-1 sm:mb-2" />
+            <img src="./assets/face2.png" alt="Satisfaction level 2" class="w-9 h-9 sm:w-10 sm:h-10" />
+          </label>
+          <label class="flex flex-col items-center text-gray-600 cursor-pointer">
+            <input type="radio" name="satisfaction" value="3" class="form-radio mb-1 sm:mb-2" />
+            <img src="./assets/face3.png" alt="Satisfaction level 3" class="w-9 h-9 sm:w-10 sm:h-10" />
+          </label>
+          <label class="flex flex-col items-center text-gray-600 cursor-pointer">
+            <input type="radio" name="satisfaction" value="4" class="form-radio mb-1 sm:mb-2" />
+            <img src="./assets/face4.png" alt="Satisfaction level 4" class="w-9 h-9 sm:w-10 sm:h-10" />
+          </label>
+          <label class="flex flex-col items-center text-gray-600 cursor-pointer">
+            <input type="radio" name="satisfaction" value="5" class="form-radio mb-1 sm:mb-2" />
+            <img src="./assets/face5.png" alt="Satisfaction level 5" class="w-9 h-9 sm:w-10 sm:h-10" />
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2 font-medium text-lg" for="course_number">Course Number or Name (optional):</label>
+        <div class="suggest-wrap">
+          <input id="course_number" name="course_number" list="courses" type="text" placeholder="e.g. 01003 - Mathematics 1a" enterkeyhint="done" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full border border-gray-300 p-3 sm:p-4 text-lg rounded focus:ring-2 focus:ring-red-500 focus:border-red-500"/>
+          <div id="courseSuggest" class="hidden" aria-live="polite"></div>
+        </div>
+        <datalist id="courses"></datalist>
+      </div>
+
+      <button id="submitButton" type="submit" class="bg-red-500 text-white px-8 py-4 text-lg rounded-lg hover:bg-red-600 w-full font-medium transition-colors">
+        Submit Survey
+      </button>
+    </form>
+
+    <!-- Extra bottom space so focused inputs aren’t obscured by the on-screen keyboard in tablet mode -->
+    <div class="kiosk-pad"></div>
+  </div>
+</div>

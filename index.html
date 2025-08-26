@@ -4,317 +4,55 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
-  <title>Student Satisfaction Survey</title>
-  
-  <!-- External Dependencies -->
+  <title>DTU Python Support Survey</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/sidebar.css">
-  <link rel="stylesheet" href="css/modal.css">
-  <link rel="stylesheet" href="css/survey.css">
-  <link rel="stylesheet" href="css/kiosk.css">
-  <link rel="stylesheet" href="css/compact.css">
+  <meta http-equiv="Content-Security-Policy"
+        content="frame-src 'self' https://app.powerbi.com https://*.powerbi.com; child-src 'self' https://app.powerbi.com https://*.powerbi.com">
+
+  <!-- Our CSS split -->
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <link rel="stylesheet" href="./css/modal.css">
+  <link rel="stylesheet" href="./css/survey.css">
+  <link rel="stylesheet" href="./css/kiosk.css">
+  <link rel="stylesheet" href="./css/compact.css">
 </head>
-<body>
-  
-  <!-- Sidebar Component -->
-  <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <h2 class="sidebar-title">Menu</h2>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="#" id="surveyTab" class="sidebar-nav-item active">
-        <svg class="sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
-        Survey
-      </a>
-      <a href="#" id="analyticsTab" class="sidebar-nav-item">
-        <svg class="sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-        </svg>
-        Analytics
-      </a>
-      <a href="#" id="logoutTab" class="sidebar-nav-item">
-        <svg class="sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
-        Logout
-      </a>
-    </nav>
-  </div>
 
-  <!-- Sidebar overlay -->
-  <div id="sidebarOverlay" class="hidden modal-overlay"></div>
+<body class="bg-gray-50 min-h-screen flex">
 
-  <!-- Main content -->
-  <div class="main-wrapper" id="mainWrapper">
-    
-    <!-- Header with menu button -->
-    <header class="bg-white shadow-sm border-b p-4 flex items-center">
-      <button id="openSidebar" class="p-2 rounded-md hover:bg-gray-100 transition-colors">
-        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <!-- Sidebar (only for supporters; hidden for token/QR/kiosk) -->
+  <div id="sidebarContainer"></div>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+  <!-- Main wrapper -->
+  <div id="mainWrapper" class="flex-1 flex flex-col">
+    <!-- Top bar (hidden for students) -->
+    <header class="h-16 flex items-center px-4 border-b bg-white">
+      <button id="openSidebar" class="text-gray-600 hover:text-gray-800 mr-3" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
-      <h1 class="ml-4 text-xl font-semibold text-gray-800">DTU Python Support Survey</h1>
+      <h1 class="text-lg font-semibold text-gray-800">DTU Python Support Survey</h1>
     </header>
 
-    <!-- Building Selection Component -->
-    <div id="buildingSelectionPage" class="page-container">
-      <div class="content-card">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-700">Select Your Building</h2>
-          <div class="flex items-center gap-4">
-            <label class="inline-flex items-center text-gray-700">
-              <input id="workshopDayToggle" type="checkbox" class="h-5 w-5 text-red-500 border-gray-300 rounded">
-              <span class="ml-2 whitespace-nowrap">Workshop Day</span>
-            </label>
-            <button id="btnGenerateLink" type="button" class="btn-primary btn-small">
-              One-time link
-            </button>
-            <button id="btnGenerateQR" type="button" class="btn-secondary btn-small">
-              Generate QR
-            </button>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <button onclick="selectBuilding(302)" class="building-button">
-            <div class="building-title">Building 302</div>
-            <div class="building-subtitle">Main Python Support Office</div>
-          </button>
-          
-          <button onclick="selectBuilding(358)" class="building-button">
-            <div class="building-title">Building 358</div>
-            <div class="building-subtitle">Secondary Python Support Office</div>
-          </button>
-          
-          <!-- Custom Building Section -->
-          <div class="border-2 border-gray-200 rounded-lg p-4">
-            <div class="building-title mb-2">Other Building</div>
-            <div class="building-subtitle mb-3">Enter building number</div>
-            <div class="flex gap-2">
-              <input
-                id="customBuilding"
-                type="number"
-                placeholder="e.g. 324"
-                min="100"
-                max="500"
-                class="flex-1 border border-gray-300 p-2 rounded input-focus"
-                onkeypress="handleEnterKey(event)"
-              />
-              <button onclick="selectCustomBuilding()" class="btn-primary">
-                Select
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Survey Form Component -->
-    <div id="surveyPage" class="page-container hidden">
-      <div class="content-card">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-700">Student Satisfaction Survey</h2>
-          <button id="backToSetupBtn" type="button" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-            </svg>
-            Back to Setup
-          </button>
-        </div>
-        
-        <form id="surveyForm" class="survey-form">
-          <!-- Role + Student/Username + Workshop -->
-          <div id="roleWorkshopGroup" class="role-workshop-group">
-            <!-- Roles -->
-            <div class="role-buttons">
-              <label class="role-label">
-                <input type="radio" name="role" value="student" class="form-radio" checked />
-                <span class="ml-2">Student</span>
-              </label>
-              <label class="role-label">
-                <input type="radio" name="role" value="employee" class="form-radio" />
-                <span class="ml-2">PhD&nbsp;/&nbsp;Employee</span>
-              </label>
-            </div>
-
-            <!-- Student number -->
-            <div id="studentWrapper" class="student-wrapper">
-              <label class="form-label" for="student_number">Student Number:</label>
-              <div class="student-input-group">
-                <span class="student-prefix">s</span>
-                <input id="student_number" name="student_number" type="text" inputmode="numeric" pattern="[0-9]{6}" placeholder="e.g. 123456" title="Enter 6 digits only. Example: s123456 (type only the digits after 's')" class="student-input input-focus" required/>
-              </div>
-            </div>
-
-            <!-- Workshop -->
-            <div class="workshop-fieldset">
-              <fieldset>
-                <legend class="workshop-legend">Did you attend a workshop?</legend>
-                <div class="workshop-options">
-                  <label class="role-label">
-                    <input type="radio" id="workshop_yes" name="workshop" value="yes" class="form-radio" />
-                    <span class="ml-2">Yes</span>
-                  </label>
-                  <label class="role-label">
-                    <input type="radio" id="workshop_no" name="workshop" value="no" class="form-radio" />
-                    <span class="ml-2">No</span>
-                  </label>
-                </div>
-              </fieldset>
-            </div>
-
-            <!-- Username (employee) -->
-            <div id="usernameWrapper" class="username-wrapper hidden">
-              <label class="form-label" for="dtu_username">DTU Credentials:</label>
-              <input id="dtu_username" name="dtu_username" type="text" pattern="[A-Za-z]{3,20}" placeholder="e.g. manufer" class="form-input input-focus"/>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <span class="form-label">Satisfaction (1 to 5):</span>
-            <div class="satisfaction-grid">
-              <label class="satisfaction-option">
-                <input type="radio" name="satisfaction" value="1" class="satisfaction-radio form-radio" required />
-                <img src="assets/images/face1.png" alt="Satisfaction level 1" class="satisfaction-face" />
-              </label>
-              <label class="satisfaction-option">
-                <input type="radio" name="satisfaction" value="2" class="satisfaction-radio form-radio" />
-                <img src="assets/images/face2.png" alt="Satisfaction level 2" class="satisfaction-face" />
-              </label>
-              <label class="satisfaction-option">
-                <input type="radio" name="satisfaction" value="3" class="satisfaction-radio form-radio" />
-                <img src="assets/images/face3.png" alt="Satisfaction level 3" class="satisfaction-face" />
-              </label>
-              <label class="satisfaction-option">
-                <input type="radio" name="satisfaction" value="4" class="satisfaction-radio form-radio" />
-                <img src="assets/images/face4.png" alt="Satisfaction level 4" class="satisfaction-face" />
-              </label>
-              <label class="satisfaction-option">
-                <input type="radio" name="satisfaction" value="5" class="satisfaction-radio form-radio" />
-                <img src="assets/images/face5.png" alt="Satisfaction level 5" class="satisfaction-face" />
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="course_number">Course Number or Name (optional):</label>
-            <input id="course_number" name="course_number" list="courses" type="text" placeholder="e.g. 01003 - Mathematics 1a" class="course-input input-focus"/>
-            <datalist id="courses"></datalist>
-          </div>
-
-          <button id="submitButton" type="submit" class="submit-button">
-            Submit Survey
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Analytics Component -->
-    <div id="analyticsPage" class="flex-1 p-0 hidden">
-      <div class="h-full w-full bg-white">
-        <div class="h-full w-full">
-          <iframe 
-            loading="lazy" 
-            title="PIS stats BI Report" 
-            class="w-full h-full" 
-            style="min-height: calc(100vh - 4rem);" 
-            src="https://app.powerbi.com/reportEmbed?reportId=37fdb992-9f81-4834-8861-4248a1a68903&autoAuth=true&ctid=f251f123-c9ce-448e-9277-34bb285911d9" 
-            frameborder="0" 
-            allowFullScreen="true">
-          </iframe>
-        </div>
-      </div>  
-    </div>
+    <!-- Pages -->
+    <div id="buildingSelectionContainer"></div>
+    <div id="surveyContainer" class="hidden"></div>
+    <div id="analyticsContainer" class="hidden"></div>
   </div>
 
-  <!-- Modals -->
+  <!-- Modals (login / thank-you / error / QR) -->
+  <div id="modalsContainer"></div>
 
-  <!-- Supporter Login Modal -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <h2 class="modal-title">Supporter Login</h2>
-      <input id="accessCodeInput" type="password" placeholder="Enter daily code" class="modal-input" />
-      <button id="codeSubmit" class="modal-button">Enter</button>
-      <p id="loginError" class="modal-error hidden">Incorrect code. Try again.</p>
-    </div>
-  </div>
+  <!-- Floating FABs (tablet mode) -->
+  <button id="kioskEnter" class="fab" aria-label="Enter tablet mode" title="Enter tablet mode">Enter Tablet mode</button>
+  <button id="kioskExit" aria-label="Exit tablet mode (tap 5 times)"></button>
 
-  <!-- Thank You Modal -->
-  <div id="thankYouModal" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <h2 class="modal-title">We value your time</h2>
-      <p class="modal-message">Thank you for your feedback!</p>
-      <button id="closeModal" class="modal-button">Close</button>
-    </div>
-  </div>
+  <!-- 3rd-party QR encoder -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
-  <!-- Error Modal -->
-  <div id="errorModal" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="flex justify-center mb-3">
-        <svg class="w-16 h-16 text-red-600" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 511.999 463.377">
-          <path d="M289.639 9.137c12.411 7.25 23.763 18.883 33.037 34.913l.97 1.813 1.118 1.941 174.174 302.48c33.712 56.407-1.203 113.774-66.174 112.973v.12H73.485c-.895 0-1.78-.04-2.657-.112-59.104-.799-86.277-54.995-61.909-106.852.842-1.805 1.816-3.475 2.816-5.201L189.482 43.959l-.053-.032c9.22-15.786 20.717-27.457 33.411-34.805C243.788-3 268.711-3.086 289.639 9.137zM255.7 339.203c13.04 0 23.612 10.571 23.612 23.612 0 13.041-10.572 23.613-23.612 23.613-13.041 0-23.613-10.572-23.613-23.613s10.572-23.612 23.613-23.612zm17.639-35.379c-.794 19.906-34.506 19.931-35.278-.006-3.41-34.108-12.129-111.541-11.853-143.591.284-9.874 8.469-15.724 18.939-17.955 3.231-.686 6.781-1.024 10.357-1.019 3.595.008 7.153.362 10.387 1.051 10.818 2.303 19.309 8.392 19.309 18.446l-.043 1.005-11.818 142.069z"/>
-        </svg>
-      </div>
-      <h2 id="errorTitle" class="modal-title">We couldn't submit your response</h2>
-      <p class="error-message modal-message">An error occurred while submitting your response.</p>
-      <button id="closeErrorModal" class="modal-button">Try Again</button>
-    </div>
-  </div>
-
-  <!-- QR Modal -->
-  <div id="qrModal" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content qr-modal-content">
-      <h3 class="modal-title">Generate QR for Building</h3>
-
-      <div class="space-y-3 mb-4">
-        <p class="text-sm text-gray-600">Quick select:</p>
-        <div class="qr-quick-buttons">
-          <button type="button" class="qr-quick qr-quick-button btn-302" data-building="302">302</button>
-          <button type="button" class="qr-quick qr-quick-button btn-358" data-building="358">358</button>
-          <button type="button" class="qr-quick qr-quick-button btn-324" data-building="324">324</button>
-        </div>
-
-        <div class="form-group">
-          <label for="qrBuilding" class="form-label">Or enter any building (000–990):</label>
-          <input id="qrBuilding" type="number" min="0" max="990" placeholder="e.g. 324" class="form-input input-focus"/>
-        </div>
-
-        <label class="role-label">
-          <input id="qrWorkshopDay" type="checkbox" class="h-4 w-4 text-red-500 border-gray-300 rounded">
-          <span class="ml-2">Preselect Workshop</span>
-        </label>
-      </div>
-
-      <div class="flex items-center gap-2 mb-4">
-        <button id="qrCreate" class="btn-primary">Create QR</button>
-        <button id="qrClose" class="btn-secondary">Close</button>
-      </div>
-
-      <p id="qrInlineError" class="modal-error mb-3 hidden"></p>
-
-      <div id="qrResult" class="qr-result hidden">
-        <canvas id="qrCanvas" class="qr-canvas"></canvas>
-        <img id="qrImg" class="qr-image hidden" alt="QR code"/>
-        <div class="qr-link-container">
-          <input id="qrLink" type="text" readonly class="qr-link-input" />
-          <button id="qrCopy" class="qr-copy-button">Copy</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- JavaScript Bundle -->
-  <script src="js/bundle.js"></script>
+  <!-- JS entry (modules) -->
+  <script type="module" src="./js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!-- Supporter Login -->
+<div id="loginModal" class="fixed inset-0 bg-white flex items-center justify-center z-[1000]">
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs w-full">
+    <h2 class="text-xl font-semibold mb-3 text-gray-700">Supporter Login</h2>
+    <input id="accessCodeInput" type="password" placeholder="Enter daily code" autofocus autocomplete="one-time-code" class="border border-gray-300 p-2 w-full rounded mb-4" />
+    <button id="codeSubmit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 w-full">Enter</button>
+    <p id="loginError" class="text-sm text-red-600 mt-2 hidden">Incorrect code. Try again.</p>
+  </div>
+</div>
+
+<!-- Thank-you -->
+<div id="thankYouModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs mx-auto">
+    <h2 class="text-xl font-semibold mb-2">We value your time</h2>
+    <p class="mb-4">Thank you for your feedback!</p>
+    <button id="closeModal" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Close</button>
+  </div>
+</div>
+
+<!-- Error -->
+<div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs mx-auto">
+    <div class="flex justify-center mb-3">
+      <svg class="w-16 h-16 text-red-600" fill="currentColor" stroke="currentColor" viewBox="0 0 512 464"><path d="M289.639 9.137c12.411 7.25 23.763 18.883 33.037 34.913l.97 1.813 1.118 1.941 174.174 302.48c33.712 56.407-1.203 113.774-66.174 112.973v.12H73.485c-.895 0-1.78-.04-2.657-.112-59.104-.799-86.277-54.995-61.909-106.852.842-1.805 1.816-3.475 2.816-5.201L189.482 43.959c9.22-15.786 20.717-27.457 33.411-34.805C243.788-3 268.711-3.086 289.639 9.137zM255.7 339.203c13.04 0 23.612 10.571 23.612 23.612 0 13.041-10.572 23.613-23.612 23.613-13.041 0-23.613-10.572-23.613-23.613s10.572-23.612 23.613-23.612zm17.639-35.379c-.794 19.906-34.506 19.931-35.278-.006-3.41-34.108-12.129-111.541-11.853-143.591.284-9.874 8.469-15.724 18.939-17.955 3.231-.686 6.781-1.024 10.357-1.019 3.595.008 7.153.362 10.387 1.051 10.818 2.303 19.309 8.392 19.309 18.446l-.043 1.005-11.818 142.069z"/></svg>
+    </div>
+    <h2 id="errorTitle" class="text-xl font-semibold mb-2 text-gray-800">We couldn't submit your response</h2>
+    <p class="error-message mb-4 text-gray-600">An error occurred while submitting your response.</p>
+    <button id="closeErrorModal" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">Try Again</button>
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Generate QR for Building</h3>
+
+    <div class="space-y-3 mb-4">
+      <p class="text-sm text-gray-600">Quick select:</p>
+      <div class="flex gap-2">
+        <button type="button" class="qr-quick btn-302 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded border" data-building="302">302</button>
+        <button type="button" class="qr-quick btn-358 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded border" data-building="358">358</button>
+        <button type="button" class="qr-quick btn-324 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded border" data-building="324">324</button>
+      </div>
+
+      <div>
+        <label for="qrBuilding" class="block text-sm text-gray-700 mb-1">Or enter any building (000–990):</label>
+        <input id="qrBuilding" type="number" min="0" max="990" placeholder="e.g. 324" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-red-500 focus:border-red-500"/>
+      </div>
+
+      <label class="inline-flex items-center text-gray-700">
+        <input id="qrWorkshopDay" type="checkbox" class="h-4 w-4 text-red-500 border-gray-300 rounded">
+        <span class="ml-2">Preselect Workshop</span>
+      </label>
+    </div>
+
+    <div class="flex items-center gap-2 mb-4">
+      <button id="qrCreate" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Create QR</button>
+      <button id="qrClose" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Close</button>
+    </div>
+
+    <p id="qrInlineError" class="text-sm text-red-600 mb-3 hidden"></p>
+
+    <div id="qrResult" class="hidden">
+      <canvas id="qrCanvas" class="mx-auto mb-3"></canvas>
+      <img id="qrImg" class="mx-auto mb-3 hidden" alt="QR code"/>
+      <div class="flex items-center gap-2">
+        <input id="qrLink" type="text" readonly class="flex-1 border border-gray-300 p-2 rounded text-xs" />
+        <button id="qrCopy" class="bg-gray-100 border px-3 py-2 rounded hover:bg-gray-200 text-sm">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,162 +1,42 @@
-/* Main layout and base styles */
-body {
-  background-color: #f9fafb;
-  display: flex;
-  min-height: 100vh;
-}
+/* shared tweaks */
+body.student-flow header { display: none !important; }
+body.student-flow #surveyPage { padding: 0 !important; }
+body.student-flow #buildingSelectionPage,
+body.student-flow #analyticsPage { display: none !important; }
 
-.main-wrapper {
-  flex: 1;
+/* Default student token/QR: full-height, no card */
+body.student-flow #surveyCard{
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-/* Header and menu button */
-header {
-  position: relative;
-  z-index: 60;
-}
-
-#openSidebar {
-  position: relative;
-  z-index: 61;
-}
-
-/* Page containers */
-.page-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 1rem;
+  max-width: 44rem;
+}
+@supports (min-height: 100svh) {
+  body.student-flow #surveyCard { min-height: 100svh; }
 }
 
-.content-card {
-  width: 100%;
-  max-width: 42rem;
-  margin: 0 auto;
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  transform: scale(1.1);
-  transform-origin: center;
+/* In kiosk bring card back */
+body.kiosk-mode.student-flow #surveyPage { padding: 1rem !important; }
+body.kiosk-mode.student-flow #surveyCard{
+  margin: 1rem auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(17,24,39,.12);
+  max-width: 44rem;
+  min-height: auto;
 }
 
-@media (min-width: 768px) {
-  .content-card {
-    max-width: 56rem;
-    padding: 2rem;
-  }
+/* floating buttons */
+.fab{
+  position:fixed; min-width:44px; height:44px; border-radius:9999px;
+  padding:0 14px; font-weight:600; font-size:12px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.18); z-index:60; cursor:pointer; user-select:none;
 }
-
-@media (min-width: 1280px) {
-  .content-card {
-    max-width: 70rem;
-    padding: 3rem;
-  }
-}
-
-/* Utility classes */
-.hidden {
-  display: none !important;
-}
-
-.pointer-events-none {
-  pointer-events: none;
-}
-
-.opacity-40 {
-  opacity: 0.4;
-}
-
-.opacity-50 {
-  opacity: 0.5;
-}
-
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
-
-/* Form elements */
-.form-radio {
-  height: 1.25rem;
-  width: 1.25rem;
-  color: #ef4444;
-  border-color: #d1d5db;
-}
-
-.form-radio:focus {
-  ring-width: 2px;
-  ring-color: #ef4444;
-}
-
-/* Custom focus styles for inputs */
-.input-focus:focus {
-  outline: none;
-  ring-width: 2px;
-  ring-color: #ef4444;
-  border-color: #ef4444;
-}
-
-/* Button styles */
-.btn-primary {
-  background-color: #ef4444;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #dc2626;
-}
-
-.btn-secondary {
-  background-color: white;
-  border: 1px solid #ef4444;
-  color: #dc2626;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background-color: #fef2f2;
-}
-
-.btn-small {
-  font-size: 0.875rem;
-  padding: 0.5rem 0.75rem;
-}
-
-/* Building selection buttons */
-.building-button {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  text-align: left;
-  background: white;
-  cursor: pointer;
-}
-
-.building-button:hover {
-  border-color: #fca5a5;
-  background-color: #fef2f2;
-}
-
-.building-title {
-  font-weight: 600;
-  color: #374151;
-}
-
-.building-subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
+#kioskEnter{ right:12px; bottom:12px; background:#000; color:#fff; }
+#kioskEnter:hover{ background:#111; }
+.kiosk-mode #kioskEnter{ display:none !important; }
+#kioskExit{ display:none; position:fixed; right:0; top:0; width:56px; height:56px; z-index:70; background:transparent; cursor:pointer; }
+.kiosk-mode #kioskExit{ display:block; }
