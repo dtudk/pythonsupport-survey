@@ -1,5 +1,8 @@
 import { STORAGE, linkToken } from './config.js';
 
+// --- HARD KIOSK & WAKE LOCK SUPPORT ---
+const HARD_KIOSK = false;
+
 const kioskEnterBtn = () => document.getElementById('kioskEnter');
 const kioskExitBtn  = () => document.getElementById('kioskExit');
 
@@ -13,11 +16,17 @@ function setViewportLock(lock, scale = 1.0) {
     : 'width=device-width, initial-scale=1.0');
 }
 
+async function ensureOrientation() {
+  if (screen.orientation && screen.orientation.lock) {
+    await screen.orientation.lock('landscape').catch(()=>{});
+  }
+}
+
 export function applyKiosk(state){
   if(state){
     document.body.classList.add('kiosk-mode');
     setViewportLock(true, 1.30); // 15% more than the 1.15 you asked before
-    try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('portrait').catch(()=>{}); } catch {}
+    try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); } catch {}
     try { const el=document.documentElement; if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(()=>{}); } catch {}
     window.scrollTo(0,0);
   } else {
@@ -26,6 +35,7 @@ export function applyKiosk(state){
     try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); } catch {}
   }
   syncFabVisibility();
+  setTimeout(() => { try { ensureFullscreen(); ensureOrientation(); } catch {} }, 400);
 }
 
 export function setKiosk(v){
