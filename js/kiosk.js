@@ -1,7 +1,38 @@
 import { STORAGE, linkToken } from './config.js';
 
 // --- HARD KIOSK & WAKE LOCK SUPPORT ---
+
 const HARD_KIOSK = false;
+
+// --- Screen Wake Lock (keep display on) ---
+let __wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator && navigator.wakeLock?.request) {
+      __wakeLock = await navigator.wakeLock.request('screen');
+      __wakeLock.addEventListener?.('release', () => {
+        if (isKiosk()) { try { requestWakeLock(); } catch {} }
+      });
+    }
+  } catch {
+    // Some platforms require visibility; we'll try again on visibilitychange
+  }
+}
+
+function releaseWakeLock() {
+  try { __wakeLock?.release?.(); } catch {}
+  __wakeLock = null;
+}
+
+function onVisibilityChange() {
+  if (!isKiosk()) return;
+  if (document.visibilityState === 'visible') {
+    try { requestWakeLock(); } catch {}
+    // Re-ensure fullscreen/orientation when coming back to foreground
+    setTimeout(() => { try { ensureFullscreen(); ensureOrientation(); } catch {} }, 200);
+  }
+}
 
 const kioskEnterBtn = () => document.getElementById('kioskEnter');
 const kioskExitBtn  = () => document.getElementById('kioskExit');
@@ -14,6 +45,16 @@ function setViewportLock(lock, scale = 1.0) {
   vp.setAttribute('content', lock
     ? `width=device-width, initial-scale=${scale}, maximum-scale=${scale}, user-scalable=no`
     : 'width=device-width, initial-scale=1.0');
+}
+
+// Ensure fullscreen mode (helper)
+async function ensureFullscreen() {
+  try {
+    const el = document.documentElement;
+    if (!document.fullscreenElement && el.requestFullscreen) {
+      await el.requestFullscreen().catch(()=>{});
+    }
+  } catch {}
 }
 
 async function ensureOrientation() {
@@ -29,10 +70,15 @@ export function applyKiosk(state){
     try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); } catch {}
     try { const el=document.documentElement; if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(()=>{}); } catch {}
     window.scrollTo(0,0);
+    // Keep display on and re-acquire on tab visibility changes
+    try { requestWakeLock(); } catch {}
+    try { document.addEventListener('visibilitychange', onVisibilityChange, false); } catch {}
   } else {
     document.body.classList.remove('kiosk-mode');
     setViewportLock(false);
     try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); } catch {}
+    try { document.removeEventListener('visibilitychange', onVisibilityChange, false); } catch {}
+    try { releaseWakeLock(); } catch {}
   }
   syncFabVisibility();
   setTimeout(() => { try { ensureFullscreen(); ensureOrientation(); } catch {} }, 400);
@@ -69,7 +115,7 @@ export function wireKiosk() {
   window.addEventListener('contextmenu', (e)=>{ if (isKiosk()) e.preventDefault(); });
 
   // leave kiosk if fullscreen gets closed via ESC (prevents freeze)
-  function fsChange(){ if (isKiosk() && !document.fullscreenElement) { setKiosk(false); } }
+  function fsChange(){ if (isKiosk() && !document.fullscreenElement) { ensureFullscreen(); } }
   document.addEventListener('fullscreenchange', fsChange);
   document.addEventListener('webkitfullscreenchange', fsChange);
 
