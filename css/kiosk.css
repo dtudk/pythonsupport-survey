@@ -4,10 +4,10 @@
 .kiosk-mode #sidebarOverlay,
 .kiosk-mode #buildingSelectionPage,
 .kiosk-mode #analyticsPage { display:none !important; }
-
-.kiosk-mode html, .kiosk-mode body { height:100%; overflow:hidden; }
-.kiosk-mode body{ position:fixed; inset:0; height:100vh; width:100vw; overscroll-behavior:none; }
-.kiosk-mode #mainWrapper{ height:100vh; overflow:hidden; }
+html.kiosk-mode, body.kiosk-mode { scroll-behavior: auto !important; }
+html.kiosk-mode, body.kiosk-mode { height:auto; overflow:auto; }
+body.kiosk-mode{ position:static; inset:auto; height:auto; width:auto; overscroll-behavior:contain; }
+body.kiosk-mode #mainWrapper{ height:auto; overflow:auto; }
 
 .kiosk-mode * { -webkit-touch-callout:none; user-select:none; }
 .kiosk-mode input, .kiosk-mode textarea { -webkit-touch-callout:auto; user-select:text; }
@@ -32,6 +32,7 @@ body.student-flow header { display: none !important; }
 body.kiosk-mode #surveyPage,
 body.kiosk-mode.student-flow #surveyPage {
   padding: 1rem !important;
+  padding-bottom: calc(1rem + var(--kbd-offset, 0px)) !important;
 }
 
 body.kiosk-mode #surveyCard,

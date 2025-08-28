@@ -52,48 +52,13 @@
       white-space: nowrap;       /* prevent "Attended workshop?" from breaking */
     }
   }
-
-  /* Tablet: allow inner scrolling and reserve space for keyboard */
-  body.kiosk-mode #surveyPage { 
-    overflow: auto !important; 
-    -webkit-overflow-scrolling: touch; 
-    overscroll-behavior: contain; 
-  }
-  body.kiosk-mode #surveyPage input,
-  body.kiosk-mode #surveyPage select,
-  body.kiosk-mode #surveyPage textarea {
-    scroll-margin-top: 12vh; /* ensure focused field centers above keyboard */
-  }
-  /* Spacers (top & bottom) shown only in kiosk to prevent keyboard overlap and give scroll room */
-  .kiosk-pad, .kiosk-pad-top { display: none; }
-  .kiosk-mode .kiosk-pad, .kiosk-mode .kiosk-pad-top { 
-    display: block; 
-    height: 28.6vh;   /* 30% more than the previous 22vh */
-    min-height: 208px; /* 30% more than the previous 160px */
-  }
-
-  /* Touch devices: custom course suggestion popover (JS toggles visibility) */
-  .suggest-wrap { position: relative; }
-  #courseSuggest { 
-    display: none; 
-    position: absolute; 
-    left: 0; right: 0; 
-    margin-top: .25rem; 
-    background: #fff; 
-    border: 1px solid #d1d5db; 
-    border-radius: .5rem; 
-    box-shadow: 0 10px 25px rgba(17,24,39,.12); 
-    max-height: 14rem; 
-    overflow: auto; 
-    z-index: 40;
-  }
-  #courseSuggest.show { display: block; }
-  #courseSuggest .item { padding: .625rem .75rem; cursor: pointer; }
-  #courseSuggest .item:hover { background: #f9fafb; }
+/* Hide Chrome/Chromium datalist arrow */
+input[list]::-webkit-calendar-picker-indicator { display: none !important; }
+input[list]::-webkit-list-button { display: none !important; } /* legacy Chromium */
+input[list] { -webkit-appearance: none; appearance: none; background-image: none !important; }
 </style>
 <div id="surveyPage" class="px-2 sm:px-4 grid place-items-center hidden" style="min-height: calc(100vh - 4rem);">
   <div id="surveyCard" class="w-full max-w-5xl xl:max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
-    <div class="kiosk-pad-top"></div>
     <div class="flex items-center justify-center mb-6">
       <h2 class="text-3xl md:text-4xl font-bold text-gray-700">Student Satisfaction Survey</h2>
     </div>
@@ -167,19 +132,17 @@
 
       <div>
         <label class="block text-gray-700 mb-2 font-medium text-lg" for="course_number">Course Number or Name (optional):</label>
-        <div class="suggest-wrap">
-          <input id="course_number" name="course_number" list="courses" type="text" placeholder="e.g. 01003 - Mathematics 1a" enterkeyhint="done" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full border border-gray-300 p-3 sm:p-4 text-lg rounded focus:ring-2 focus:ring-red-500 focus:border-red-500"/>
-          <div id="courseSuggest" class="hidden" aria-live="polite"></div>
-        </div>
-        <datalist id="courses"></datalist>
+        <input id="course_number" name="course_number" type="text" placeholder="e.g. 01003 - Mathematics 1a" enterkeyhint="done" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" class="w-full border border-gray-300 p-3 sm:p-4 text-lg rounded focus:ring-2 focus:ring-red-500 focus:border-red-500"/>
+        <datalist id="course-suggestions"></datalist>
+    </datalist>
       </div>
-
+      
       <button id="submitButton" type="submit" class="bg-red-500 text-white px-8 py-4 text-lg rounded-lg hover:bg-red-600 w-full font-medium transition-colors">
         Submit Survey
       </button>
     </form>
 
-    <!-- Extra bottom space so focused inputs aren’t obscured by the on-screen keyboard in tablet mode -->
-    <div class="kiosk-pad"></div>
+
   </div>
 </div>
+
