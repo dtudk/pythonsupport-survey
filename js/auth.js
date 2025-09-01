@@ -1,5 +1,10 @@
 import { endpoint, STORAGE } from './config.js';
-
+// Reset everything on refresh except the saved API key
+try {
+  const keep = localStorage.getItem(STORAGE.AUTH);
+  localStorage.clear();
+  if (keep !== null) localStorage.setItem(STORAGE.AUTH, keep);
+} catch {}
 export function getSavedKey() {
   try { const saved = localStorage.getItem(STORAGE.AUTH); return saved ? saved.split("|") : [null,null]; }
   catch { return [null,null]; }
