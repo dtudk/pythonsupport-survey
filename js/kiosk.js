@@ -196,16 +196,14 @@ export function wireKiosk() {
 
   window.addEventListener('contextmenu', (e)=>{ if (isKiosk()) e.preventDefault(); });
 
-  // leave kiosk if fullscreen gets closed via ESC (recover, do not exit)
-  function fsChange(){
-    if (isKiosk() && !document.fullscreenElement) {
-      ensureFullscreen();
-      // keep kiosk mode active
-    }
+// If fullscreen ends by any means, cleanly exit kiosk mode to avoid a "stuck" state
+function fsChange(){
+  if (isKiosk() && !document.fullscreenElement) {
+    setKiosk(false);   // drop kiosk-mode and all its locks
   }
-  document.addEventListener('fullscreenchange', fsChange);
-  document.addEventListener('webkitfullscreenchange', fsChange);
-
+}
+document.addEventListener('fullscreenchange', fsChange);
+document.addEventListener('webkitfullscreenchange', fsChange);
   // Wake lock can drop on tab switches / power events
   window.addEventListener('focus', () => { if (isKiosk()) tryReacquireWakeLockSoon(); }, {passive:true});
 
