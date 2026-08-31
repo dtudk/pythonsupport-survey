@@ -1,8 +1,9 @@
 import { STORAGE, linkToken, hasOneTimeToken, isQrLink, state } from './config.js';
-import { isAuthValid, showLogin, hideLogin, wireLogin } from './auth.js';
+import { isAuthValid, showLogin, hideLogin, wireLogin, isOfflineMode, setOfflineMode } from './auth.js';
 import { wireKiosk, applyKiosk, isKiosk, syncFabVisibility } from './kiosk.js';
 import { wireBuildingPage, showBuildingSelection, showSurveyForm, applySidebarVisibility } from './building.js';
 import { wireSurveyForm } from './survey.js';
+import { wireFailsafe } from './failsafe.js';
 
 async function loadPartial(selector, url){
   const host = document.querySelector(selector);
@@ -22,6 +23,7 @@ wireLogin();
 wireKiosk();
 wireBuildingPage();
 wireSurveyForm();
+wireFailsafe();
 
 // Student-flow layout rule: hide header/pages for students (token/QR or kiosk)
 function applyStudentFlowLayout() {
@@ -30,9 +32,10 @@ function applyStudentFlowLayout() {
 }
 applyStudentFlowLayout();
 
-// Show/hide login
+// Show/hide login. A supporter already let in without a code stays in
 if (hasOneTimeToken || isQrLink) { hideLogin(); }
 else if (isAuthValid())          { hideLogin(); }
+else if (isOfflineMode())        { setOfflineMode(true); hideLogin(); }
 else                             { showLogin(); }
 
 // Initial page

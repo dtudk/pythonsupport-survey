@@ -8,6 +8,8 @@ export const STORAGE = {
   BUILDING: 'selectedBuilding',
   WORKSHOP: 'workshopDay',
   KIOSK: 'kioskMode',
+  FAILSAFE: 'surveyFailsafeQueue',
+  OFFLINE: 'surveyOfflineMode',
 };
 
 export const params = new URLSearchParams(location.search);

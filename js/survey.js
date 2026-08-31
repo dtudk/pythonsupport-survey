@@ -1,8 +1,11 @@
-import { endpoint, STORAGE, state, linkToken, qpWD } from './config.js';
-import { getSavedKey } from './auth.js';
+import { endpoint, STORAGE, state, linkToken, isQrLink, qpWD } from './config.js';
+import { getSavedKey, isAuthValid, clearSavedKey, isCredentialFault } from './auth.js';
 import { showError, friendlyError } from './errors.js';
 import { syncFabVisibility } from './kiosk.js';
 import { visualViewportBox, ensureVisible } from './viewport.js';
+import { saveFailedSubmission } from './failsafe.js';
+
+const isSupporterDevice = !linkToken && !isQrLink;
 
 
 function setupCourseAutocomplete() {
@@ -380,6 +383,39 @@ export function wireSurveyForm(){
 
   let redirectOnThankYouClose = false;
 
+  // The response is safely accounted for, thank the respondent and reset.
+  function accept() {
+    if (linkToken) {
+      thankYou.classList.remove('hidden');
+      redirectOnThankYouClose = true;
+      setTimeout(() => { window.location.replace('https://pythonsupport.dtu.dk/'); }, 7000);
+      return;
+    }
+
+    thankYou.classList.remove('hidden');
+
+    form.reset();
+    form.role.value = 'student';
+    toggleRole();
+    const buttonArray = document.getElementById("course_button_array");
+    buttonArray.innerHTML = '';
+    loadCourseSchedule();
+    const preferWD = qpWD || (localStorage.getItem(STORAGE.WORKSHOP) === 'true');
+    document.getElementById('workshop_yes').checked = !!preferWD;
+    document.getElementById('workshop_no').checked  = !preferWD;
+    studentNumInput.value = '';
+
+    if (document.body.classList.contains('kiosk-mode')) {
+      try { document.activeElement?.blur(); } catch {}
+    } else {
+      try { studentNumInput.focus({ preventScroll: true }); } catch {}
+    }
+
+    setTimeout(() => {
+      thankYou.classList.add('hidden');
+    }, 3000);
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     submitButton.disabled = true;
@@ -400,40 +436,18 @@ export function wireSurveyForm(){
     };
 
     try {
+      if (isSupporterDevice && !isAuthValid()) {
+        saveFailedSubmission(payload, 'offline — no code yet');
+        accept();
+        return;
+      }
+
       const headers = { "Content-Type": "application/json" };
       if (linkToken) { headers["x-token"] = linkToken; } else { headers["x-api-key"] = getSavedKey()[1] || ""; }
       const response = await fetch(endpoint, { method: "POST", headers, body: JSON.stringify(payload) });
 
       if (response.ok) {
-        if (linkToken) {
-          thankYou.classList.remove('hidden');
-          redirectOnThankYouClose = true;
-          setTimeout(() => { window.location.replace('https://pythonsupport.dtu.dk/'); }, 7000);
-        } else {
-          thankYou.classList.remove('hidden');
-
-          form.reset();
-          form.role.value = 'student';
-          toggleRole();
-          const buttonArray = document.getElementById("course_button_array");
-          buttonArray.innerHTML = '';
-          loadCourseSchedule();
-          const preferWD = qpWD || (localStorage.getItem(STORAGE.WORKSHOP) === 'true');
-          document.getElementById('workshop_yes').checked = !!preferWD;
-          document.getElementById('workshop_no').checked  = !preferWD;
-          studentNumInput.value = '';
-
-          if (document.body.classList.contains('kiosk-mode')) {
-            try { document.activeElement?.blur(); } catch {}
-          } else {
-            try { studentNumInput.focus({ preventScroll: true }); } catch {}
-          }
-
-          setTimeout(() => {
-            thankYou.classList.add('hidden');
-            // no re-centering here
-          }, 3000);
-        }
+        accept();
       } else {
         let raw = '';
         try {
@@ -445,12 +459,29 @@ export function wireSurveyForm(){
             const t = await response.text(); if (t && t.trim().length) raw = t.trim();
           }
         } catch {}
-        showError(friendlyError(raw, response.status, !!linkToken), response.status);
+
+        if (isSupporterDevice && isCredentialFault(response.status)) {
+          clearSavedKey();
+          saveFailedSubmission(payload, `HTTP ${response.status} — code refused`);
+          accept();
+          return;
+        }
+
+        const { title, message } = friendlyError(raw, response.status, !!linkToken);
+        const keepable = response.status >= 500 || response.status === 429;
+        const saved = keepable
+          ? saveFailedSubmission(payload, `HTTP ${response.status}`)
+          : null;
+        showError({ title, message: saved ? `${message} ${savedNote(saved)}` : message }, response.status);
         if (form.role.value === 'student') { studentNumInput.focus(); } else { usernameInput?.focus(); }
       }
     } catch (err) {
       console.error("submit failed:", err);
-      showError('A network error occurred. Please check your connection and try again.');
+      const saved = saveFailedSubmission(payload, err?.message || 'network error');
+      showError({
+        title: "We couldn't reach the server",
+        message: `A network error occurred. ${savedNote(saved)}`
+      });
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Submit Survey';
@@ -467,4 +498,11 @@ export function wireSurveyForm(){
 
 function inKiosk() {
   return document.body.classList.contains('kiosk-mode');
+}
+
+// What to tell the user once the failsafe has taken the response.
+function savedNote(saved) {
+  if (!saved?.stored)  return 'The response could not be saved — please write it down.';
+  if (!isSupporterDevice) return 'Your response is saved and will be sent automatically when the connection is back.';
+  return 'The response is saved on this device and will be sent automatically when the connection is back. Use “Download backup file” to also keep a copy.';
 }
