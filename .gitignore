@@ -5,6 +5,28 @@
 .env.test.local
 .env.production.local
 
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Database files
+*.sqlite3
+
+# Backend data exports (contain student numbers).
+# Scoped to backend/ so CSV files elsewhere stay tracked.
+backend/**/*.csv
+
+# Notebook data: old sources with student names and numbers, and dashboards with embedded rows.
+notebooks/fetching_data/old_data_sources/
+notebooks/**/*.html
+
 # System files
 .DS_Store
 .DS_Store?
@@ -35,8 +57,11 @@ temp/
 .tmp/
 .cache/
 
-
 # Backup files
 *.bak
 *.backup
 *.old
+
+# Collected Django static files (built by collectstatic on the server)
+backend/staticfiles/
+graphify-out/
