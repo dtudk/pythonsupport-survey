@@ -1,24 +1,24 @@
-import { linkToken } from './config.js';
+import { linkToken, isQrLink } from './config.js';
 
-export function friendlyError(raw, status = 0, usingToken = false) {
-  const text = (typeof raw === 'string') ? raw : (raw?.message || '');
-  const l = (text || '').toLowerCase();
+// '' when the body isn't JSON, such as Django's HTML error pages.
+export async function errorText(response) {
+  const data = (await response.json().catch(() => null)) || {};
+  const fieldErrors = Object.values(data.errors || {}).flat().map(err => err.message || err);
+  return data.error || fieldErrors.join(' ');
+}
+
+export function friendlyError(text, status = 0) {
   let title = "We couldn't submit your response";
-  let message = 'Please try again in a moment.';
-  const roleNow = (document.querySelector('input[name="role"]:checked')?.value || 'student');
+  let message = text || 'Please try again in a moment.';
 
-  if (l.includes('study number does not exist') || l.includes('student number does not exist')) {
-    if (roleNow === 'employee') { title = 'DTU username not found'; message = "We couldn't find that DTU username. Please enter your DTU credentials (letters only) and try again."; }
-    else { title = 'Student number not found'; message = "Please check the six digits after 's' on your DTU ID (e.g. s123456) and try again."; }
-  } else if (l.includes('invalid or used token') || l.includes('token expired') || (status === 401 && usingToken) || l.includes('link has expired')) {
+  if (text.toLowerCase().includes('link has expired')) {
     title = "Oops, this link has expired"; message = 'This one-time link has already been used or expired. Please request a new link from your supporter.';
-  } else if (l.includes('unauthorized')) {
-    title = 'Not authorised'; message = 'Your session has expired. Please refresh and try again.';
+  } else if (isQrLink && !linkToken && status === 403) {
+    // ?b= QR codes without a token: the backend only takes them from a logged-in device.
+    title = 'This QR code no longer works'; message = 'Your response was not saved. Please ask a supporter for a new QR code.';
   } else if (status >= 500) {
     title = 'Service temporarily unavailable'; message = 'We are experiencing a temporary problem. Please try again in a minute.';
-  } else if (status === 429) {
-    title = 'Too many attempts'; message = 'Please wait a moment and try again.';
-  } else if (text && text.trim()) { message = text; }
+  }
 
   return { title, message };
 }
@@ -26,27 +26,20 @@ export function friendlyError(raw, status = 0, usingToken = false) {
 export function showError(input, status) {
   const usingToken = !!linkToken;
   const { title, message } = (typeof input === 'string')
-    ? friendlyError(input, status, usingToken)
-    : (input && typeof input === 'object') ? input : friendlyError('', status, usingToken);
+    ? friendlyError(input, status)
+    : (input && typeof input === 'object') ? input : friendlyError('', status);
 
   const titleEl = document.getElementById('errorTitle');
   if (titleEl) titleEl.textContent = title;
   document.querySelector('.error-message').textContent = message;
 
-  let redirectOnErrorClose = false;
-  const combo = (title + ' ' + message).toLowerCase();
-  const isExpiredTokenError = usingToken && (
-    combo.includes('link has expired') ||
-    combo.includes('invalid or used token') ||
-    combo.includes('token expired')
-  );
+  const isExpiredTokenError = (usingToken || isQrLink) && /link has expired|no longer works/i.test(`${title} ${message}`);
   const closeBtn = document.getElementById('closeErrorModal');
   if (closeBtn) {
-    if (isExpiredTokenError) { redirectOnErrorClose = true; closeBtn.textContent = 'Go to Python Support'; }
-    else { closeBtn.textContent = 'Try Again'; }
+    closeBtn.textContent = isExpiredTokenError ? 'Go to Python Support' : 'Try Again';
     closeBtn.onclick = () => {
       document.getElementById('errorModal').classList.add('hidden');
-      if (redirectOnErrorClose && usingToken) { window.location.replace('https://pythonsupport.dtu.dk/'); }
+      if (isExpiredTokenError) { window.location.replace('https://pythonsupport.dtu.dk/'); }
     };
   }
 

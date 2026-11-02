@@ -1,10 +1,5 @@
-// --- Visual viewport helpers (on-screen keyboard awareness) ---
-//
-// On tablets the on-screen keyboard shrinks the *visual* viewport but leaves the
-// *layout* viewport untouched. getBoundingClientRect() and scrollIntoView() both
-// work in layout-viewport coordinates, so the browser happily considers an
-// element "in view" while it sits behind the keyboard. Everything here compares
-// against the visual viewport instead.
+// The on-screen keyboard shrinks the visual viewport, not the layout viewport that
+// getBoundingClientRect() and scrollIntoView() use, so these compare against the visual one.
 
 export function visualViewportBox() {
   const vv = window.visualViewport;
@@ -13,7 +8,6 @@ export function visualViewportBox() {
   return { top, bottom: top + vv.height, height: vv.height };
 }
 
-// How much of the layout viewport the keyboard covers (0 when it is closed).
 export function keyboardOcclusion() {
   const vv = window.visualViewport;
   if (!vv) return 0;
@@ -24,16 +18,13 @@ export function isKeyboardOpen() {
   return keyboardOcclusion() > 80; // heuristic: ignore URL-bar sized changes
 }
 
-// The panel an ARIA combobox controls (our autocomplete dropdown), if it is open.
 export function openPanelFor(el) {
   const id = el?.getAttribute?.('aria-controls');
   const panel = id ? document.getElementById(id) : null;
   return panel && !panel.hidden ? panel : null;
 }
 
-// Scroll the document so `el` — and `companion`, e.g. its open dropdown — sit
-// inside the visual viewport. The field itself always wins: we never scroll so
-// far that it leaves the visible area to fit its dropdown.
+// `el` always stays fully visible, even if `companion` (its open dropdown) doesn't fit.
 export function ensureVisible(el, { companion = null, margin = 12, behavior = 'auto' } = {}) {
   if (!el) return;
 
@@ -47,11 +38,10 @@ export function ensureVisible(el, { companion = null, margin = 12, behavior = 'a
   }
 
   let delta = 0;
-  if (bottom + margin > vp.bottom)   delta = bottom + margin - vp.bottom; // scroll down
-  else if (top - margin < vp.top)    delta = top - margin - vp.top;       // scroll up
+  if (bottom + margin > vp.bottom)   delta = bottom + margin - vp.bottom;
+  else if (top - margin < vp.top)    delta = top - margin - vp.top;
   if (!delta) return;
 
-  // Clamp so the field stays fully visible either way.
   if (delta > 0) delta = Math.min(delta, Math.max(0, r.top - margin - vp.top));
   else           delta = Math.max(delta, Math.min(0, r.bottom + margin - vp.bottom));
   if (!delta) return;

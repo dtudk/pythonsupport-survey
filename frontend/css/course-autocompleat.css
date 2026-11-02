@@ -1,14 +1,10 @@
-/* ===== Course autocomplete (custom dropdown) ===== */
-
-/* anchor for the absolutely-positioned list */
 .course-ac { position: relative; }
 
-/* dropdown panel */
 .course-ac-list {
   position: absolute;
   top: calc(100% + 4px);
   left: 0; right: 0;
-  z-index: 40;                          /* below the fabs (60) */
+  z-index: 40;                          /* below the FABs (60) */
   margin: 0;
   padding: .25rem;
   list-style: none;
@@ -16,26 +12,24 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: #fff;
-  border: 1px solid #d1d5db;            /* gray-300 */
+  border: 1px solid #d1d5db;
   border-radius: .5rem;
   box-shadow: 0 10px 25px rgba(17,24,39,.12);
 }
 .course-ac-list[hidden] { display: none; }
 
-/* Flipped above the field when the on-screen keyboard leaves no room below.
-   max-height is set inline by the autocomplete to the space actually available. */
+/* When the on-screen keyboard leaves no room below; survey.js sets max-height inline. */
 .course-ac-list.is-above {
   top: auto;
   bottom: calc(100% + 4px);
   box-shadow: 0 -10px 25px rgba(17,24,39,.12);
 }
 
-/* each suggestion */
 .course-ac-item {
   padding: .625rem .75rem;
   border-radius: .375rem;
   font-size: 1rem;
-  color: #374151;                       /* gray-700 */
+  color: #374151;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -43,17 +37,15 @@
 }
 .course-ac-item:hover,
 .course-ac-item.is-active {
-  background: #fef2f2;                   /* red-50  */
-  color: #b91c1c;                        /* red-700 */
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
-/* --- Supporter view: compact --- */
 body:not(.student-flow):not(.kiosk-mode) #surveyPage .course-ac-item {
   padding: .5rem .625rem;
   font-size: .95rem;
 }
 
-/* --- Kiosk (tablet): roomier touch targets --- */
 body.kiosk-mode .course-ac-list { max-height: 22rem; }
 body.kiosk-mode .course-ac-item {
   padding: .9rem 1rem;

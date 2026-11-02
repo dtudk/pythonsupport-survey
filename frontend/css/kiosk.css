@@ -1,9 +1,9 @@
-/* Kiosk hard locks */
 .kiosk-mode #adminControls,
 .kiosk-mode #sidebar,
 .kiosk-mode #sidebarOverlay,
 .kiosk-mode #buildingSelectionPage,
-.kiosk-mode #analyticsPage { display:none !important; }
+.kiosk-mode #modeSelectionPage,
+.kiosk-mode #problemLogPage { display:none !important; }
 html.kiosk-mode, body.kiosk-mode { scroll-behavior: auto !important; }
 html.kiosk-mode, body.kiosk-mode { height:auto; overflow:auto; }
 body.kiosk-mode{ position:static; inset:auto; height:auto; width:auto; overscroll-behavior:contain; }
@@ -12,7 +12,6 @@ body.kiosk-mode #mainWrapper{ height:auto; overflow:auto; }
 .kiosk-mode * { -webkit-touch-callout:none; user-select:none; }
 .kiosk-mode input, .kiosk-mode textarea { -webkit-touch-callout:auto; user-select:text; }
 
-/* ensure login modal always works in kiosk */
 .kiosk-mode #loginModal,
 .kiosk-mode #loginModal *{
   -webkit-touch-callout: auto !important;
@@ -20,41 +19,8 @@ body.kiosk-mode #mainWrapper{ height:auto; overflow:auto; }
   pointer-events: auto !important;
 }
 
-/* Hide the top bar when in Tablet (kiosk) mode */
 body.kiosk-mode header {
   display: none !important;
 }
 
 body.student-flow header { display: none !important; }
-
-/* === Tablet (kiosk) survey sizing — wider like building selector === */
-/* Apply even if some pages don't toggle .student-flow */
-body.kiosk-mode #surveyPage,
-body.kiosk-mode.student-flow #surveyPage {
-  padding: 1rem !important;
-  padding-bottom: calc(1rem + var(--kbd-offset, 0px)) !important;
-  /* Header is hidden in tablet mode, so use the full viewport — the inline
-     calc(100vh - 4rem) would centre the card 2rem above true centre. */
-  min-height: 100vh !important;
-}
-@supports (min-height: 100dvh) {
-  body.kiosk-mode #surveyPage,
-  body.kiosk-mode.student-flow #surveyPage { min-height: 100dvh !important; }
-}
-
-body.kiosk-mode #surveyCard,
-body.kiosk-mode.student-flow #surveyCard {
-  /* Make the survey wide in tablet mode (≈ max-w-6xl) */
-  max-width: 72rem !important;
-  width: 100% !important;
-  /* No vertical margin: #surveyPage already pads 1rem, and the extra 2rem was
-     enough to push the taller form past the viewport and break centring. */
-  margin: 0 auto !important;
-
-  /* Bring back the card look in tablet mode */
-  border-radius: 0.75rem !important; /* 12px */
-  box-shadow: 0 10px 25px rgba(17,24,39,.12) !important;
-
-  /* Override any student-flow full-height flattening */
-  min-height: auto !important;
-}

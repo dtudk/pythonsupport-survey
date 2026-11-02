@@ -7,28 +7,20 @@
   <title>DTU Python Support Survey</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
   <meta http-equiv="Content-Security-Policy"
-        content="frame-src 'self' https://app.powerbi.com https://*.powerbi.com; child-src 'self' https://app.powerbi.com https://*.powerbi.com">
+        content="frame-src 'self'; child-src 'self'">
 
-  <!-- Our CSS split -->
   <link rel="stylesheet" href="./css/main.css">
-  <link rel="stylesheet" href="./css/sidebar.css">
-  <link rel="stylesheet" href="./css/modal.css">
-  <link rel="stylesheet" href="./css/survey.css">
   <link rel="stylesheet" href="./css/kiosk.css">
-  <link rel="stylesheet" href="./css/compact.css">
   <link rel="stylesheet" href="./css/course-autocompleat.css">
 
 </head>
 
 <body class="bg-gray-50 min-h-screen flex">
 
-  <!-- Sidebar (only for supporters; hidden for token/QR/kiosk) -->
   <div id="sidebarContainer"></div>
   <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
-  <!-- Main wrapper -->
   <div id="mainWrapper" class="flex-1 flex flex-col">
-    <!-- Top bar (hidden for students) -->
     <header class="h-16 flex items-center px-4 border-b bg-white">
       <button id="openSidebar" class="text-gray-600 hover:text-gray-800 mr-3" aria-label="Open menu">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,23 +30,21 @@
       <h1 class="text-lg font-semibold text-gray-800">DTU Python Support Survey</h1>
     </header>
 
-    <!-- Pages -->
-    <div id="buildingSelectionContainer"></div>
+    <div id="modeSelectionContainer" class="hidden"></div>
+    <div id="buildingSelectionContainer" class="hidden"></div>
     <div id="surveyContainer" class="hidden"></div>
-    <div id="analyticsContainer" class="hidden"></div>
+    <div id="problemLogContainer" class="hidden"></div>
   </div>
 
-  <!-- Modals (login / thank-you / error / QR) -->
+  <div id="offlineBadge" class="hidden fixed top-2 left-1/2 transform -translate-x-1/2 z-[900] bg-yellow-100 text-yellow-900 border border-yellow-400 text-sm px-4 py-1 rounded-full shadow">
+    Offline &mdash; responses are saved on this device
+  </div>
+
   <div id="modalsContainer"></div>
 
-  <!-- Floating FABs (tablet mode) -->
   <button id="kioskEnter" class="fab" aria-label="Enter tablet mode" title="Enter tablet mode">Enter Tablet mode</button>
   <button id="kioskExit" aria-label="Exit tablet mode (tap 5 times)"></button>
 
-  <!-- 3rd-party QR encoder -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
-  <!-- JS entry (modules) -->
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>

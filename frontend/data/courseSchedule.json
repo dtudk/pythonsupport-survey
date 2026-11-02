@@ -1,45 +1,68 @@
 {
   "Monday": {
     "morning": [
-      {"abbreviation": "Math 1a", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
-      {"abbreviation": "Physics", "name": "Physics (Polytechnical Foundation)", "number": "10060"}
+      {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
+      {"abbreviation": "Physics (ENG)", "name": "Physics (Polytechnical Foundation)", "number": "10060"},
+      {"abbreviation": "Chem", "name": "Chemistry (Polytechnical Foundation)", "number": "26020"}
     ],
     "afternoon": [
       {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
-      {"abbreviation": "Math 1a (ENG)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"}
+      {"abbreviation": "Deep Learning", "name": "Deep learning", "number": "02456"},
+      {"abbreviation": "Bioengineering", "name": "Bioengineering (Polytechnical Foundation)", "number": "27020"}
     ]
   },
   "Tuesday": {
     "morning": [
-      {"abbreviation": "Stats", "name": "Statistics (Polytechnical Foundation)", "number": "02402"}
+      {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
+      {"abbreviation": "Stats", "name": "Statistics (Polytechnical Foundation)", "number": "02402"},
+      {"abbreviation": "Image analysis", "name": "Image analysis", "number": "02503"},
+      {"abbreviation": "Physics (ENG)", "name": "Physics (Polytechnical Foundation)", "number": "10060"}
     ],
     "afternoon": [
-      {"abbreviation": "Math 1a", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"}
+      {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
+      {"abbreviation": "Machine Learning", "name": "Machine Learning", "number": "02452"},
+      {"abbreviation": "Computational Tools for Data Science", "name": "Computational Tools for Data Science", "number": "02807"},
+      {"abbreviation": "Quantitative Methods", "name": "Quantitative methods to assess sustainability (Polytechnical Foundation)", "number": "12105"}
     ]
   },
   "Wednesday": {
-    "morning": [],
+    "morning": [
+      {"abbreviation": "Math 1a (ENG)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"},
+      {"abbreviation": "Intro to Software Tech", "name": "Introductory Programming and Software Technology", "number": "02100"},
+      {"abbreviation": "Social graphs and interactions", "name": "Social graphs and interactions", "number": "02805"},
+      {"abbreviation": "Design-build in Life Science", "name": "Design-build in Life Science", "number": "22180"}
+    ],
     "afternoon": [
-      {"abbreviation": "Physics", "name": "Physics (Polytechnical Foundation)", "number": "10060"}
+      {"abbreviation": "Math 1a (ENG)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"},
+      {"abbreviation": "Intro to Software Tech", "name": "Introductory Programming and Software Technology", "number": "02100"},
+      {"abbreviation": "Social graphs and interactions", "name": "Social graphs and interactions", "number": "02805"},
+      {"abbreviation": "Physics (ENG)", "name": "Physics (Polytechnical Foundation)", "number": "10060"},
+      {"abbreviation": "Design-build in Life Science", "name": "Design-build in Life Science", "number": "22180"}
     ]
   },
   "Thursday": {
     "morning": [
-      {"abbreviation": "Math 1a", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
-      {"abbreviation": "Physics", "name": "Physics (Polytechnical Foundation)", "number": "10060"}
+      {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
+      {"abbreviation": "Resource Engineering", "name": "Resource Engineering", "number": "12139"},
+      {"abbreviation": "Applied AI for Entrepreneurs", "name": "Applied AI for Entrepreneurs", "number": "38113"}
     ],
     "afternoon": [
-      {"abbreviation": "Computer Programming", "name": "Computer Programming (Polytechnical Foundation)", "number": "02002"},
-      {"abbreviation": "Physics", "name": "Physics (Polytechnical Foundation)", "number": "10060"}
+      {"abbreviation": "Computer Programming (DAN)", "name": "Computer Programming (Polytechnical Foundation)", "number": "02002"},
+      {"abbreviation": "Physics (ENG)", "name": "Physics (Polytechnical Foundation)", "number": "10060"},
+      {"abbreviation": "Signals and linear systems in discrete time", "name": "Signals and linear systems in discrete time", "number": "22051"}
     ]
   },
   "Friday": {
     "morning": [
-      {"abbreviation": "Math 1a", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"},
-      {"abbreviation": "Computer Programming", "name": "Computer Programming (Polytechnical Foundation)", "number": "02003"},
-      {"abbreviation": "Physics", "name": "Physics (Polytechnical Foundation)", "number": "10065"},
-      {"abbreviation": "Intro Stats", "name": "Introduction to Statistics", "number": "02323"}
+      {"abbreviation": "Math 1a (DAN)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01001"},
+      {"abbreviation": "Computer Programming (ENG)", "name": "Computer Programming (Polytechnical Foundation)", "number": "02003"},
+      {"abbreviation": "Intro to Stats", "name": "Introduction to Statistics", "number": "02323"},
+      {"abbreviation": "Numerical Algo", "name": "Introduction to Numerical Algorithms", "number": "02601"},
+      {"abbreviation": "Physics (DAN)", "name": "Physics (Polytechnical Foundation)", "number": "10065"}
     ],
-    "afternoon": []
+    "afternoon": [
+      {"abbreviation": "Math 1a (ENG)", "name": "Mathematics 1a (Polytechnical foundation)", "number": "01003"},
+      {"abbreviation": "Quantitative Methods", "name": "Quantitative methods to assess sustainability (Polytechnical Foundation)", "number": "12106"}
+    ]
   }
 }
