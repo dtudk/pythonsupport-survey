@@ -1,4 +1,5 @@
 import { csrfEndpoint, STORAGE } from './config.js';
+import { apiFetch, getSavedKey, loginResult } from './api.js';
 
 // A refresh resets everything except the login, the failsafe queue and offline mode.
 try {
@@ -6,11 +7,6 @@ try {
   localStorage.clear();
   for (const [k, v] of keep) if (v !== null) localStorage.setItem(k, v);
 } catch {}
-// [date, csrfToken] from the last successful login.
-export function getSavedKey() {
-  try { const saved = localStorage.getItem(STORAGE.AUTH); return saved ? saved.split("|") : [null,null]; }
-  catch { return [null,null]; }
-}
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function isAuthValid() {
@@ -20,10 +16,6 @@ export function isAuthValid() {
 
 export function clearSavedKey() {
   try { localStorage.removeItem(STORAGE.AUTH); } catch {}
-}
-
-export function isCredentialFault(status) {
-  return status === 401 || status === 403;
 }
 
 // Only the backend can check the password, so when it is unreachable supporters get in without
@@ -55,24 +47,18 @@ export function hideLogin() {
 export function wireLogin() {
   const submit = async () => {
     const input = document.getElementById("accessCodeInput").value.trim();
-    let reachable = true;
-    const token = await fetch(csrfEndpoint, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: input }),
-      signal: AbortSignal.timeout?.(10_000),  // a hang counts as unreachable: offline mode
-    }).then(r => r.status >= 500 ? Promise.reject() : r.ok ? r.json().then(j => j.csrfToken) : null)
-      .catch(() => { reachable = false; return null; });
+    // A hang counts as unreachable: offline mode.
+    const { status, data } = await apiFetch(csrfEndpoint, { password: input }, 10_000);
+    const result = loginResult(status);
 
     document.getElementById("accessCodeInput").value = "";
 
-    if (token) {
-      try { localStorage.setItem(STORAGE.AUTH, `${today()}|${token}`); } catch {}
+    if (result === 'in' && data.csrfToken) {
+      try { localStorage.setItem(STORAGE.AUTH, `${today()}|${data.csrfToken}`); } catch {}
       setOfflineMode(false);
       hideLogin();
       import('./failsafe.js').then(m => m.retryPending()).catch(() => {});
-    } else if (!reachable) {
+    } else if (result === 'offline') {
       setOfflineMode(true);
       hideLogin();
     } else {

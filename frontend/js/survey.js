@@ -1,11 +1,10 @@
-import { endpoint, state, linkToken, isQrLink, qpWD } from './config.js';
-import { getSavedKey, isAuthValid, clearSavedKey, isCredentialFault } from './auth.js';
+import { endpoint, state, linkToken, isQrLink, isSupporterDevice, qpWD } from './config.js';
+import { isAuthValid, clearSavedKey } from './auth.js';
+import { apiFetch, linkCheckResult, submitResult } from './api.js';
 import { showError, friendlyError, errorText } from './errors.js';
 import { syncFabVisibility, isKiosk } from './kiosk.js';
 import { visualViewportBox, ensureVisible } from './viewport.js';
-import { saveFailedSubmission, SUBMIT_TIMEOUT_MS } from './failsafe.js';
-
-const isSupporterDevice = !linkToken && !isQrLink;
+import { saveFailedSubmission } from './failsafe.js';
 
 
 function setupCourseAutocomplete() {
@@ -216,20 +215,14 @@ export async function verifyOneTimeToken() {
     return false;
   }
   if (!linkToken) return true;
-  try {
-    const resp = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ping: true, token: linkToken })
-    });
-    if (!resp.ok) {
-      // A server error says nothing about the link; the form keeps its answers if a submit fails.
-      if (resp.status !== 403) { showError('', resp.status); return true; }
-      lockForm('Oops, this link has expired. Please request a new one-time link from your supporter.', resp.status);
-      return false;
-    }
-    return true;
-  } catch { return true; }
+  const { status } = await apiFetch(endpoint, { ping: true, token: linkToken });
+  const result = linkCheckResult(status);
+  if (result === 'expired') {
+    lockForm('Oops, this link has expired. Please request a new one-time link from your supporter.', status);
+    return false;
+  }
+  if (result === 'warn') showError('', status);
+  return true;
 }
 
 export function wireSurveyForm(){
@@ -368,43 +361,25 @@ export function wireSurveyForm(){
         return;
       }
 
-      const headers = { "Content-Type": "application/json", "X-CSRFToken": getSavedKey()[1] || "" };
-      const response = await fetch(endpoint, {
-        method: "POST", credentials: "include", headers, body: JSON.stringify(payload),
-        signal: AbortSignal.timeout?.(SUBMIT_TIMEOUT_MS),
-      });
+      const { status, data } = await apiFetch(endpoint, payload);
+      const result = submitResult(status, isSupporterDevice);
+      if (result === 'sent') { accept(); return; }
 
-      if (response.ok) {
-        accept();
-      } else {
-        const raw = await errorText(response);
-
-        if (isSupporterDevice && isCredentialFault(response.status)) {
-          clearSavedKey();
-          saveFailedSubmission(payload, `HTTP ${response.status} — code refused`);
-          accept();
-          return;
-        }
-
-        const { title, message } = friendlyError(raw, response.status);
-        // Students' phones never queue: the form stays filled for them to submit again.
-        const keepable = isSupporterDevice && (response.status >= 500 || response.status === 429);
-        const saved = keepable
-          ? saveFailedSubmission(payload, `HTTP ${response.status}`)
-          : null;
-        // Queued counts as sent: a form left filled invites a second copy via "Try Again".
-        if (saved?.stored) { accept(); return; }
-        showError({ title, message: saved ? `${message} ${NOT_SAVED}` : message }, response.status);
-        if (form.role.value === 'student') { studentNumInput.focus(); } else { usernameInput?.focus(); }
-      }
-    } catch (err) {
-      console.error("submit failed:", err);
-      const saved = isSupporterDevice ? saveFailedSubmission(payload, err?.message || 'network error') : null;
+      if (result === 'login') clearSavedKey();
+      const saved = result === 'rejected' ? null : saveFailedSubmission(payload, status ? `HTTP ${status}` : 'no answer');
+      // Queued counts as sent: a form left filled invites a second copy via "Try Again".
       if (saved?.stored) { accept(); return; }
-      showError({
-        title: "We couldn't reach the server",
-        message: `A network error occurred. ${saved ? NOT_SAVED : 'Check your connection and try again.'}`
-      });
+
+      if (!status) {
+        showError({
+          title: "We couldn't reach the server",
+          message: `A network error occurred. ${saved ? NOT_SAVED : 'Check your connection and try again.'}`
+        });
+        return;
+      }
+      const { title, message } = friendlyError(errorText(data), status);
+      showError({ title, message: saved ? `${message} ${NOT_SAVED}` : message }, status);
+      if (form.role.value === 'student') { studentNumInput.focus(); } else { usernameInput?.focus(); }
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Submit Survey';

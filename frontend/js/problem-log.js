@@ -1,5 +1,6 @@
 import { problemLogEndpoint } from './config.js';
-import { getSavedKey, clearSavedKey, isCredentialFault, showLogin } from './auth.js';
+import { clearSavedKey, showLogin } from './auth.js';
+import { apiFetch } from './api.js';
 import { errorText } from './errors.js';
 
 export function wireProblemLog() {
@@ -25,27 +26,19 @@ export function wireProblemLog() {
 
     button.disabled = true;
     button.textContent = 'Submitting…';
-    try {
-      const resp = await fetch(problemLogEndpoint, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getSavedKey()[1] || '' },
-        body: JSON.stringify({ problems, other: text }),
-      });
-      if (isCredentialFault(resp.status)) {
-        clearSavedKey();
-        showLogin();
-        say('Your supporter session has expired. Log in and submit again.');
-        return;
-      }
-      if (!resp.ok) throw new Error(await errorText(resp) || `Request failed (${resp.status}).`);
+    const { ok, status, data } = await apiFetch(problemLogEndpoint, { problems, other: text });
+    button.disabled = false;
+    button.textContent = 'Submit Problem';
+
+    if (ok) {
       form.reset();
       success.classList.remove('hidden');
-    } catch (err) {
-      say(err instanceof TypeError ? 'Could not reach the server. Please try again.' : err.message);
-    } finally {
-      button.disabled = false;
-      button.textContent = 'Submit Problem';
+    } else if (status === 403) {
+      clearSavedKey();
+      showLogin();
+      say('Your supporter session has expired. Log in and submit again.');
+    } else {
+      say(status ? errorText(data) || `Request failed (${status}).` : 'Could not reach the server. Please try again.');
     }
   });
 

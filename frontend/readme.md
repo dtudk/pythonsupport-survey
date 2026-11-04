@@ -9,7 +9,7 @@ A web-based student satisfaction survey and internal problem log for DTU Python 
 ├── index.html              # Main survey application
 ├── assets/                 # Satisfaction rating images (face1-5.png)
 ├── css/                    # Stylesheets (main, kiosk, course-autocompleat)
-├── js/                     # JavaScript modules (app, auth, building, config, errors, failsafe, kiosk, problem-log, survey, viewport)
+├── js/                     # JavaScript modules (api, app, auth, building, config, errors, failsafe, kiosk, problem-log, survey, viewport)
 ├── partials/               # HTML templates (building-selection, modals, mode-selection, problem-log, sidebar, survey-form)
 ├── data/courses.json       # Course data for autocomplete
 └── readme.md               # Documentation
@@ -41,7 +41,7 @@ Django serves the application at the site root (see [Development](../docs/develo
 The application uses password-based authentication for supporters, with automatic bypass for student access:
 
 - Regular Access (`/`): Requires daily access code authentication, then opens the form selection screen
-- One-time Links (`?token=TOKEN`) and QR Code Links (`?t=TOKEN`): Bypass authentication, direct access to survey (see [Architecture](../docs/structure.md) for how long each link lasts)
+- One-time Links and QR Code Links (`/?t=TOKEN`): Bypass authentication, direct access to survey (see [Architecture](../docs/structure.md) for how long each link lasts)
 - Reset (`?reset=1`): Clears the saved supporter login
 
 Student links add the `student-flow` class to `<body>`, which hides the header, sidebar and other pages and gives the survey its narrow student layout (`css/main.css`, `partials/survey-form.html`).

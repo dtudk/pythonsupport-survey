@@ -1,14 +1,10 @@
 // A submission the backend will not take is queued in localStorage, re-sent once the backend
 // answers again, and can be downloaded as a tab-separated file.
-import { endpoint, linkToken, isQrLink, STORAGE } from './config.js';
-import { getSavedKey, clearSavedKey, isCredentialFault, showLogin } from './auth.js';
+import { endpoint, isSupporterDevice, STORAGE } from './config.js';
+import { clearSavedKey, showLogin } from './auth.js';
+import { apiFetch, submitResult } from './api.js';
 
 const RETRY_MS = 60_000;
-// Above gunicorn's 30 s worker timeout. ?.(): older tablets lack AbortSignal.timeout.
-export const SUBMIT_TIMEOUT_MS = 35_000;
-
-// Link and QR flows are students: they must never see a login prompt.
-const isSupporterDevice = !linkToken && !isQrLink;
 
 const COLUMNS = [
   'saved_at','role','student_number','username','satisfaction',
@@ -87,25 +83,20 @@ export async function retryPending() {
     for (const rec of records) {
       if (rec.rejected) continue;
 
-      const headers = { 'Content-Type': 'application/json', 'X-CSRFToken': getSavedKey()[1] || '' };
+      const { status } = await apiFetch(endpoint, { ...rec.payload, saved_at: rec.ts });
+      // No answer: the next records wouldn't get one either.
+      if (status === 0) break;
 
-      let response;
-      try {
-        response = await fetch(endpoint, {
-          method: 'POST', credentials: 'include', headers, body: JSON.stringify({ ...rec.payload, saved_at: rec.ts }),
-          signal: AbortSignal.timeout?.(SUBMIT_TIMEOUT_MS),
-        });
-      } catch { break; }
-
-      if (response.ok) { rec.sent = true; sent++; }
-      else if (isSupporterDevice && isCredentialFault(response.status)) {
+      const result = submitResult(status, isSupporterDevice);
+      if (result === 'login') {
         clearSavedKey();
         showLogin();
         break;
       }
-      else if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+      if (result === 'sent') { rec.sent = true; sent++; }
+      else if (result === 'rejected') {
         rec.rejected = true;
-        rec.reason = `${rec.reason} / rejected ${response.status}`;
+        rec.reason = `${rec.reason} / rejected ${status}`;
       }
       settle(rec);
     }

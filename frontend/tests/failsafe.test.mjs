@@ -28,7 +28,7 @@ test('a response queued while a retry is in flight is kept', async () => {
   const retry = retryPending();
   await tick();
   saveFailedSubmission({ satisfaction: 2 });
-  answer({ ok: true, status: 201 });
+  answer(new Response(null, { status: 201 }));
   await retry;
 
   assert.deepEqual(queue().map(r => r.payload.satisfaction), [2]);
@@ -45,14 +45,14 @@ test('each answer sends, rejects or keeps the records', async () => {
     globalThis.fetch = async () => {
       calls++;
       if (answer === 'network') throw new TypeError('Failed to fetch');
-      return { ok: answer < 300, status: answer };
+      return new Response(null, { status: answer });
     };
     await retryPending();
     assert.deepEqual(queue().map(state), expected === 'sent' ? [] : [expected, expected], String(answer));
     assert.equal(calls, answer === 'network' ? 1 : 2, `${answer}: a network error stops the pass`);
 
     // The next pass, with the server back: kept records go up, rejected ones never do.
-    globalThis.fetch = async () => ({ ok: true, status: 201 });
+    globalThis.fetch = async () => new Response(null, { status: 201 });
     await retryPending();
     assert.deepEqual(queue().map(state), expected === 'rejected' ? ['rejected', 'rejected'] : [], String(answer));
   }
@@ -69,7 +69,7 @@ test('a 403 on a supporter device keeps the record and asks for the login again'
       focus() {}, select() {},
     }),
   };
-  globalThis.fetch = async () => ({ ok: false, status: 403 });
+  globalThis.fetch = async () => new Response(null, { status: 403 });
 
   await retryPending();
 
@@ -82,7 +82,7 @@ test('a retry request has a deadline', async () => {
   store.clear();
   saveFailedSubmission({ satisfaction: 1 });
   let signal;
-  globalThis.fetch = async (url, options) => { signal = options.signal; return { ok: true, status: 201 }; };
+  globalThis.fetch = async (url, options) => { signal = options.signal; return new Response(null, { status: 201 }); };
   await retryPending();
   assert.ok(signal instanceof AbortSignal);
 });
@@ -90,10 +90,10 @@ test('a retry request has a deadline', async () => {
 test('a record is still sent after a long run of server errors', async () => {
   store.clear();
   saveFailedSubmission({ satisfaction: 1 });
-  globalThis.fetch = async () => ({ ok: false, status: 502 });
+  globalThis.fetch = async () => new Response(null, { status: 502 });
   for (let i = 0; i < 25; i++) await retryPending();
 
-  globalThis.fetch = async () => ({ ok: true, status: 201 });
+  globalThis.fetch = async () => new Response(null, { status: 201 });
   assert.equal(await retryPending(), 1);
   assert.deepEqual(queue(), []);
 });

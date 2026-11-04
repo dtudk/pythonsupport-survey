@@ -50,12 +50,12 @@ requests are needed.
 
 ## Students
 
-Students never log in. A supporter creates a link for them:
+Students never log in. A supporter creates a link for them, and every link opens `/?t=<token>`:
 
-| Supporter action | Endpoint | Link | Valid |
-| --- | --- | --- | --- |
-| "Discord link" button | `POST /api/links/` | `?token=…` | 24 hours, one use, building recorded as `Online` |
-| "QR" button | `POST /api/qr-codes/` | `?t=…` | 1–365 days, reusable, fixed building |
+| Supporter action | Endpoint | Valid |
+| --- | --- | --- |
+| "Discord link" button | `POST /api/links/` | 24 hours, one use, building recorded as `Online` |
+| "QR" button | `POST /api/qr-codes/` | 1–365 days, reusable, fixed building |
 
 The student's survey posts to `POST /api/responses/` with the link's token in the body
 instead of a session. The backend decides the building from the token. Student devices

@@ -1,8 +1,7 @@
 import { linkToken, isQrLink } from './config.js';
 
-// '' when the body isn't JSON, such as Django's HTML error pages.
-export async function errorText(response) {
-  const data = (await response.json().catch(() => null)) || {};
+// '' when the answer wasn't JSON, such as Django's HTML error pages.
+export function errorText(data) {
   const fieldErrors = Object.values(data.errors || {}).flat().map(err => err.message || err);
   return data.error || fieldErrors.join(' ');
 }

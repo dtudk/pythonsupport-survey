@@ -1,5 +1,5 @@
 import { tokenEndpoint, qrEndpoint, state, linkToken, isQrLink, qpWD } from './config.js';
-import { getSavedKey } from './auth.js';
+import { apiFetch } from './api.js';
 import { showError, errorText } from './errors.js';
 import { isKiosk, syncFabVisibility } from './kiosk.js';
 
@@ -64,26 +64,12 @@ export function handleEnterKey(e){ if (e.key === 'Enter') selectCustomBuilding()
 
 async function generateOneTimeLink() {
   if (isKiosk()) return;
-  try {
-    const resp = await fetch(tokenEndpoint, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'X-CSRFToken': getSavedKey()[1] || '' },
-    });
-    if (!resp.ok) {
-      showError('Could not generate link. ' + await errorText(resp), resp.status);
-      return;
-    }
-    const { token } = await resp.json();
-    const baseUrl = window.location.origin + window.location.pathname;
-    const wd = (document.getElementById('workshopDayToggle')?.checked) ? '&wd=1' : '';
-    const url = `${baseUrl}?token=${encodeURIComponent(token)}${wd}`;
-    try { await navigator.clipboard.writeText(url); } catch {}
-    alert('Discord link copied to clipboard:\n' + url);
-  } catch (e) {
-    console.error(e);
-    showError('Unexpected error while generating the link.');
-  }
+  const { ok, status, data } = await apiFetch(tokenEndpoint);
+  if (!ok) return showError('Could not generate link. ' + errorText(data), status);
+  const wd = (document.getElementById('workshopDayToggle')?.checked) ? '&wd=1' : '';
+  const url = `${location.origin}/?t=${encodeURIComponent(data.token)}${wd}`;
+  try { await navigator.clipboard.writeText(url); } catch {}
+  alert('Discord link copied to clipboard:\n' + url);
 }
 
 function wireQRModal(){
@@ -132,15 +118,11 @@ function wireQRModal(){
       inlineErr.textContent='Please enter how many days the QR code stays valid (1-365).';
       inlineErr.classList.remove('hidden'); return;
     }
-    const resp = await fetch(qrEndpoint, {
-      method:'POST', credentials:'include',
-      headers:{ 'Content-Type':'application/json', 'X-CSRFToken': getSavedKey()[1] || '' },
-      body: JSON.stringify({ building_number: num, valid_days: days, workshop_day: qrWD.checked })
-    });
-    if (!resp.ok) return showError('Could not create QR. ' + await errorText(resp), resp.status);
-    const { url, qr } = await resp.json();
-    qrLinkInp.value = url;
-    qrImg.src = qr;
+    const { ok, status, data } = await apiFetch(qrEndpoint,
+      { building_number: num, valid_days: days, workshop_day: qrWD.checked });
+    if (!ok) return showError('Could not create QR. ' + errorText(data), status);
+    qrLinkInp.value = data.url;
+    qrImg.src = data.qr;
     qrResult.classList.remove('hidden');
   }
   qrCreate?.addEventListener('click', create);
