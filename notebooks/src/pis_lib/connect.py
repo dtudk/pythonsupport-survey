@@ -17,8 +17,6 @@ from dotenv import dotenv_values, load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 
-import mssql_python
-
 # Use only names that mean the same here as on the server: DASHBOARD_HTML is a server path.
 SETTINGS = dotenv_values(Path(__file__).resolve().parents[3] / "deploy" / "settings.env")
 
@@ -57,6 +55,8 @@ def _quote(value: str) -> str:
 
 
 def get_ait_engine():
+    import mssql_python  # in the student-data group, so get_pg_engine works without it
+
     load_dotenv()
     missing = [name for name in ("AIT_USERNAME", "AIT_PASSWORD") if not os.getenv(name)]
     if missing:

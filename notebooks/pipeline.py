@@ -1,6 +1,6 @@
 """Rebuild the processed tables and the dashboard. Stops at the first error; outputs aren't saved.
 
-    uv run python pipeline.py                                    # on your machine, in notebooks/
+    uv run --group pipeline python pipeline.py                   # on your machine, in notebooks/
     sudo /srv/pythonsupport-survey/deploy/manage.sh pipeline     # on the server
 """
 import tempfile

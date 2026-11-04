@@ -28,7 +28,7 @@ EOF
 # As root, so pis and pis-pipeline can run the dependencies but not change them.
 sync_deps() {
   uv sync --directory backend --locked --no-dev --compile-bytecode
-  uv sync --directory notebooks --locked --no-dev --compile-bytecode
+  uv sync --directory notebooks --locked --no-dev --group pipeline --compile-bytecode
   # pis can't write __pycache__ into the root-owned checkout.
   backend/.venv/bin/python -m compileall -q backend/pythonsupport
 }

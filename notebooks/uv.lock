@@ -818,39 +818,57 @@ name = "notebooks"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "altair" },
+    { name = "certifi" },
     { name = "ipykernel" },
-    { name = "mssql-python" },
-    { name = "nbclient" },
-    { name = "openpyxl" },
     { name = "pandas" },
     { name = "psycopg", extra = ["binary"] },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
-    { name = "vl-convert-python" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "nbstripout" },
 ]
+pipeline = [
+    { name = "altair" },
+    { name = "nbclient" },
+    { name = "vl-convert-python" },
+]
+student-data = [
+    { name = "mssql-python" },
+    { name = "openpyxl" },
+]
+visualization = [
+    { name = "altair" },
+    { name = "vl-convert-python" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "altair", specifier = ">=6.3.0" },
+    { name = "certifi", specifier = ">=2026.10.23" },
     { name = "ipykernel", specifier = ">=7.4.0" },
-    { name = "mssql-python", specifier = ">=1.16.0" },
-    { name = "nbclient", specifier = ">=0.11.0" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pandas", specifier = ">=3.1.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.6" },
     { name = "python-dotenv", specifier = ">=1.2.4" },
     { name = "sqlalchemy", specifier = ">=2.1.6" },
-    { name = "vl-convert-python", specifier = ">=1.9.0.post1" },
 ]
 
 [package.metadata.requires-dev]
 dev = [{ name = "nbstripout", specifier = ">=0.9.1" }]
+pipeline = [
+    { name = "altair", specifier = ">=6.3.0" },
+    { name = "nbclient", specifier = ">=0.11.0" },
+    { name = "vl-convert-python", specifier = ">=1.9.0.post1" },
+]
+student-data = [
+    { name = "mssql-python", specifier = ">=1.16.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+]
+visualization = [
+    { name = "altair", specifier = ">=6.3.0" },
+    { name = "vl-convert-python", specifier = ">=1.9.0.post1" },
+]
 
 [[package]]
 name = "numpy"

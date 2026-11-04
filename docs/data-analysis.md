@@ -53,21 +53,37 @@ sudo -u postgres psql -d pis_survey -c 'DROP ROLE "<account>"'   # to remove the
 ## Connecting from a notebook
 
 The notebooks have their own [uv](https://docs.astral.sh/uv/) project in `notebooks/`, separate
-from the backend's. Set it up and start Jupyter from there:
+from the backend's. Set it up from there:
 
 ```sh
 cd notebooks
 uv sync
-uv run --with jupyter jupyter lab
 ```
+
+Then open a notebook in VS Code and pick `notebooks/.venv` as its kernel.
+
+`uv sync` installs what every notebook needs to query the database. Packages only some tasks
+need are in groups in `notebooks/pyproject.toml`; add the ones you need:
+
+| Group | For |
+| --- | --- |
+| `visualization` | `visualization/dashboard.ipynb` and other Altair charts |
+| `pipeline` | `pipeline.py`; includes `visualization` |
+| `student-data` | `fetching_data/get_student_data.ipynb` and `update_static_data.ipynb` |
+
+```sh
+uv sync --group visualization --group student-data
+```
+
+`uv sync` removes the groups you don't name, so name them every time, or use `--all-groups`.
 
 Once per clone, also run `uv run nbstripout --install --attributes ../.gitattributes` in
 `notebooks/`. Git then strips outputs from notebooks as you stage them, so student data shown
 in a cell never gets committed; your own copy keeps its outputs. `uv sync` installs `nbstripout`
 as a dev dependency. Without that command, git commits outputs as they are.
 
-To add a package, run `uv add <package>` in `notebooks/` and commit `pyproject.toml` and
-`uv.lock` with it. `uv sync` also installs `notebooks/src/pis_lib/`, code shared by the notebooks,
+To add a package, run `uv add <package>` in `notebooks/`, or `uv add --group <group> <package>`
+when only that group's task needs it, and commit `pyproject.toml` and `uv.lock` with it. `uv sync` also installs `notebooks/src/pis_lib/`, code shared by the notebooks,
 so any notebook can import it as `pis_lib`; changes to it show up after restarting the kernel.
 
 Then, in a notebook:
@@ -108,13 +124,15 @@ and saves no outputs into the notebooks. To run it on your machine:
 
 ```sh
 cd notebooks
-uv run python pipeline.py
+uv run --group pipeline python pipeline.py
 ```
 
 The server runs it on a schedule as `pis-pipeline` and shows the dashboard at
 `/admin/dashboard/` (see [Dashboard pipeline](operations.md#dashboard-pipeline)). A notebook in
 `NOTEBOOKS` must run unattended, so it can't ask for input. On the server it can't write to the
-checkout: save results to the database, and the dashboard to `DASHBOARD_HTML`.
+checkout: save results to the database, and the dashboard to `DASHBOARD_HTML`. The server installs
+only the dependencies and the `pipeline` group, so a package these notebooks import goes in one
+of those.
 
 ## Old data
 

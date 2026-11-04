@@ -6,17 +6,14 @@ authors = [
     { name = "Tiago Alfageme", email = "ercolealfageme@hotmail.com" }
 ]
 requires-python = ">=3.13"
+# What every notebook needs: query the database from a notebook in VS Code.
 dependencies = [
-    "altair>=6.3.0",
+    "certifi>=2026.10.23",
     "ipykernel>=7.4.0",
-    "mssql-python>=1.16.0",
-    "nbclient>=0.11.0",
-    "openpyxl>=3.1.5",
     "pandas>=3.1.0",
     "psycopg[binary]>=3.3.6",
     "python-dotenv>=1.2.4",
     "sqlalchemy>=2.1.6",
-    "vl-convert-python>=1.9.0.post1",
 ]
 
 [build-system]
@@ -26,7 +23,23 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "pis_lib"  # src/pis_lib, not src/notebooks
 
+# The rest, by task: uv sync --group <name>.
 [dependency-groups]
 dev = [
     "nbstripout>=0.9.1",
+]
+# visualization/dashboard.ipynb; vl-convert saves Altair charts as PNG or SVG.
+visualization = [
+    "altair>=6.3.0",
+    "vl-convert-python>=1.9.0.post1",
+]
+# pipeline.py, which runs the processing notebooks and the dashboard.
+pipeline = [
+    { include-group = "visualization" },
+    "nbclient>=0.11.0",
+]
+# fetching_data/get_student_data.ipynb (AIT's SQL Server) and update_static_data.ipynb (Excel files).
+student-data = [
+    "mssql-python>=1.16.0",
+    "openpyxl>=3.1.5",
 ]
