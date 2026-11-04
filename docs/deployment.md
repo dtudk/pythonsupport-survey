@@ -6,6 +6,7 @@
 - [Before you start](#before-you-start)
 - [First-time setup](#first-time-setup)
 - [Trying the setup locally (test mode)](#trying-the-setup-locally-test-mode)
+- [Test server](#test-server)
 - [Updating](#updating)
 
 ## What runs on the server
@@ -125,8 +126,8 @@ Gateway`, check [nginx](nginx.md) and `sudo systemctl status pis-survey`.
 
 ## Trying the setup locally (test mode)
 
-To try `setup.sh` without a domain, for example in a Debian or Ubuntu container or VM,
-clone the repository to `/srv/pythonsupport-survey` as above and run:
+To try `setup.sh` without a domain, for example on the [test server](#test-server) or in a
+Debian or Ubuntu VM, clone the repository to `/srv/pythonsupport-survey` as above and run:
 
 ```sh
 sudo /srv/pythonsupport-survey/deploy/setup.sh --test            # serves http://localhost:2810
@@ -148,9 +149,31 @@ Test mode only writes these when it creates `backend/.env`. If a `.env` already 
 from an earlier run without `--test`, add them by hand, then run
 `sudo systemctl restart pis-survey`.
 
-In a container, run it with systemd as the init process (the script manages services with
-`systemctl`), and publish port 2810, for example `-p 8080:2810`. The site is then at
-<http://localhost:8080>.
+## Test server
+
+`deploy/test-server/` boots a fresh Debian 13 container, like psqdb, with systemd as the init
+process, so `systemctl`, `journalctl` and cron behave as on the server. It needs
+[Podman](https://podman.io) and `podman-compose` (`uv tool install podman-compose`), run as
+your own user, not root. From `deploy/test-server/`:
+
+```sh
+podman-compose up -d --build      # boot a fresh server
+podman-compose exec server bash   # log in as root
+```
+
+Inside, clone your checkout and run test mode. You are already root, and `setup.sh` installs
+`sudo` itself:
+
+```sh
+git clone /mnt/repo /srv/pythonsupport-survey
+/srv/pythonsupport-survey/deploy/setup.sh --test
+```
+
+The site is then at <http://localhost:8080>. `/mnt/repo` is your checkout, mounted read-only,
+and becomes the clone's `origin`, so `manage.sh update` deploys what you have committed
+locally, not what is on GitHub.
+
+`podman-compose down` deletes the container; the next `up` starts a fresh server.
 
 ## Updating
 

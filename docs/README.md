@@ -18,6 +18,7 @@
   - [Before you start](deployment.md#before-you-start)
   - [First-time setup](deployment.md#first-time-setup)
   - [Trying the setup locally (test mode)](deployment.md#trying-the-setup-locally-test-mode)
+  - [Test server](deployment.md#test-server)
   - [Updating](deployment.md#updating)
 - [nginx](nginx.md)
   - [Configuration](nginx.md#configuration)
