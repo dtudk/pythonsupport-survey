@@ -1,0 +1,26 @@
+.kiosk-mode #adminControls,
+.kiosk-mode #sidebar,
+.kiosk-mode #sidebarOverlay,
+.kiosk-mode #buildingSelectionPage,
+.kiosk-mode #modeSelectionPage,
+.kiosk-mode #problemLogPage { display:none !important; }
+html.kiosk-mode, body.kiosk-mode { scroll-behavior: auto !important; }
+html.kiosk-mode, body.kiosk-mode { height:auto; overflow:auto; }
+body.kiosk-mode{ position:static; inset:auto; height:auto; width:auto; overscroll-behavior:contain; }
+body.kiosk-mode #mainWrapper{ height:auto; overflow:auto; }
+
+.kiosk-mode * { -webkit-touch-callout:none; user-select:none; }
+.kiosk-mode input, .kiosk-mode textarea { -webkit-touch-callout:auto; user-select:text; }
+
+.kiosk-mode #loginModal,
+.kiosk-mode #loginModal *{
+  -webkit-touch-callout: auto !important;
+  user-select: auto !important;
+  pointer-events: auto !important;
+}
+
+body.kiosk-mode header {
+  display: none !important;
+}
+
+body.student-flow header { display: none !important; }

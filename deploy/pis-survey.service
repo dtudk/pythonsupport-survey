@@ -1,0 +1,19 @@
+# install_service (deploy/lib/app.sh) fills in the @...@ values.
+[Unit]
+Description=DTU Python Support survey backend (gunicorn)
+After=network.target
+
+[Service]
+User=@APP_USER@
+Group=@APP_USER@
+WorkingDirectory=@APP_DIR@/backend/pythonsupport
+EnvironmentFile=@APP_DIR@/backend/.env
+# Read last, so these settings win.
+EnvironmentFile=@APP_DIR@/deploy/settings.env
+# Only nginx talks to gunicorn. Test mode overrides PIS_BIND in .env.
+Environment=PIS_BIND=127.0.0.1:@PORT@
+ExecStart=@APP_DIR@/backend/.venv/bin/gunicorn pythonsupport.wsgi --bind ${PIS_BIND} --workers 3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
