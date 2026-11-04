@@ -155,7 +155,13 @@ sudo systemctl start pis-survey
 ```
 
 `postgres` can't open the backup directory, so root reads the dump and passes it on stdin.
-`--single-transaction` means a failed restore changes nothing.
+`--single-transaction` means a failed restore changes nothing. The restore waits, without a time
+limit, for any open transaction on the tables it replaces, for example an analyst's notebook. If it
+hangs, end the other sessions from a second terminal:
+
+```sh
+sudo -u postgres psql -d pis_survey -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = current_database() AND pid <> pg_backend_pid()"
+```
 
 ## Useful commands
 

@@ -163,7 +163,8 @@ sudo /srv/pythonsupport-survey/deploy/manage.sh update
 To deploy another branch, for example for testing: `sudo /srv/pythonsupport-survey/deploy/manage.sh update my-branch`.
 
 The script pulls the code, installs the backend's and the notebooks' dependencies and
-collects static files. It then stops gunicorn, backs up the database, applies migrations,
+collects static files. It then stops gunicorn, backs up the database, ends every other database
+session (an open transaction, such as in an analyst's notebook, would block the migrations), applies migrations,
 updates the pipeline's setup and starts gunicorn again. The site is
 down for the few seconds of the migrations; supporters' devices queue survey responses
 meanwhile.

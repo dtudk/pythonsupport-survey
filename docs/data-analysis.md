@@ -108,6 +108,10 @@ the password from `PGPASSWORD`, or asks for it. On the server, such as in the pi
 PostgreSQL's local socket instead and needs no password; it logs in as the account running the
 notebook.
 
+Every deploy (`manage.sh update`) ends all database sessions before it migrates. A query running
+at that moment fails, and anything not yet committed is lost. Run the cell again: the engine
+reconnects by itself.
+
 Django keeps its tables in `public`, the default schema, and its migrations may change
 anything there; analysts can only read its `survey_*` tables, except `survey_surveylink`.
 
