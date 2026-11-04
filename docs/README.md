@@ -34,6 +34,8 @@
   - [Database logins](data-analysis.md#database-logins)
   - [Connecting from a notebook](data-analysis.md#connecting-from-a-notebook)
   - [Pipeline](data-analysis.md#pipeline)
+  - [Courses](data-analysis.md#courses)
+  - [Fetch dates](data-analysis.md#fetch-dates)
   - [Old data](data-analysis.md#old-data)
 
 Component notes:

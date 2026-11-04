@@ -10,6 +10,8 @@ local socket.
 - [Database logins](#database-logins)
 - [Connecting from a notebook](#connecting-from-a-notebook)
 - [Pipeline](#pipeline)
+- [Courses](#courses)
+- [Fetch dates](#fetch-dates)
 - [Old data](#old-data)
 
 ## Database logins
@@ -70,9 +72,10 @@ need are in groups in `notebooks/pyproject.toml`; add the ones you need:
 | `visualization` | `visualization/dashboard.ipynb` and other Altair charts |
 | `pipeline` | `pipeline.py`; includes `visualization` |
 | `student-data` | `fetching_data/get_student_data.ipynb` and `update_static_data.ipynb` |
+| `courses` | `fetching_data/update_courses.ipynb` and its tests |
 
 ```sh
-uv sync --group visualization --group student-data
+uv sync --group visualization --group courses
 ```
 
 `uv sync` removes the groups you don't name, so name them every time, or use `--all-groups`.
@@ -137,6 +140,52 @@ The server runs it on a schedule as `pis-pipeline` and shows the dashboard at
 checkout: save results to the database, and the dashboard to `DASHBOARD_HTML`. The server installs
 only the dependencies and the `pipeline` group, so a package these notebooks import goes in one
 of those.
+
+## Courses
+
+[`notebooks/fetching_data/update_courses.ipynb`](../notebooks/fetching_data/update_courses.ipynb)
+scrapes kurser.dtu.dk and writes:
+
+- `frontend/data/courses.json`: the survey's course autocomplete.
+- `frontend/data/courseSchedule.json`: the course buttons for the current weekday and half day,
+  for the semester in `SEMESTER`.
+- `static_data.courses`: course names for the `course` column of `processed_responses`. It keeps
+  courses DTU no longer offers.
+
+Run it on your machine, after `uv sync --group courses`, when DTU publishes next year's courses,
+and before each semester. It asks
+for a short name for each course new to the schedule. Then commit the two frontend files and
+`notebooks/fetching_data/course_abbreviations.json`, and deploy them with `manage.sh update`.
+
+The scraper is in `notebooks/src/pis_lib/courses/`. Its self-checks run from `notebooks/`;
+`test_course_scrape.py` needs kurser.dtu.dk:
+
+```sh
+uv run --group courses python tests/test_course_rank.py
+uv run --group courses python tests/test_course_schedule.py
+uv run --group courses python tests/test_course_scrape.py
+```
+
+## Fetch dates
+
+`static_data.fetched` holds when each `static_data` table was last fetched from its source, and
+the dashboard shows these dates under its title. `deploy/db-permissions.sql` creates the table. A
+notebook that writes a `static_data` table records the date in the same transaction:
+
+```python
+from pis_lib.fetched import record_fetched
+
+with db.begin() as conn:
+    students.to_sql("students", conn, schema="static_data", if_exists="replace", index=False)
+    record_fetched(conn, "students")  # now; for an older export, pass its day: "2025-06-30"
+```
+
+To correct a date by hand:
+
+```sql
+INSERT INTO static_data.fetched VALUES ('students', '2026-10-20')
+    ON CONFLICT (table_name) DO UPDATE SET fetched_at = EXCLUDED.fetched_at;
+```
 
 ## Old data
 

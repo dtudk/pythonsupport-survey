@@ -1,0 +1,51 @@
+[
+  {
+    "name": "PG",
+    "points": 3,
+    "field": "name",
+    "pattern": "polytechnical foundation"
+  },
+  {
+    "name": "python",
+    "points": 2,
+    "field": null,
+    "pattern": "\\bpython\\b"
+  },
+  {
+    "name": "programming",
+    "points": 1,
+    "field": null,
+    "pattern": "\\bprogramming\\b"
+  },
+  {
+    "name":"programming prerequisite",
+    "points": 1,
+    "field": "Academic prerequisites",
+    "pattern": "programming"
+  },
+  {
+    "name": "BSc|BEng",
+    "points": 1,
+    "field": "Course type",
+    "pattern": "\\b(BSc|BEng)\\b"
+  },
+  {
+    "name": "100+ students",
+    "points": 1,
+    "field": "enrolled",
+    "min": 100,
+    "max": 199
+  },
+  {
+    "name": "200+ students",
+    "points": 2,
+    "field": "enrolled",
+    "min": 200
+  },
+  {
+    "name": "project course",
+    "points": -1,
+    "field": "name",
+    "pattern": "\\bproject\\b"
+  }
+]

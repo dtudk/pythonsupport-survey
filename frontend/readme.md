@@ -11,7 +11,7 @@ A web-based student satisfaction survey and internal problem log for DTU Python 
 ├── css/                    # Stylesheets (main, kiosk, course-autocompleat)
 ├── js/                     # JavaScript modules (api, app, auth, building, config, errors, failsafe, kiosk, problem-log, survey, viewport)
 ├── partials/               # HTML templates (building-selection, modals, mode-selection, problem-log, sidebar, survey-form)
-├── data/courses.json       # Course data for autocomplete
+├── data/                   # courses.json (autocomplete), courseSchedule.json (course buttons); see docs/data-analysis.md#courses
 └── readme.md               # Documentation
 ```
 

@@ -18,6 +18,9 @@ ALTER SCHEMA processed_data OWNER TO :"analyst";
 ALTER SCHEMA static_data    OWNER TO :"analyst";
 ALTER SCHEMA published_data OWNER TO :"analyst";
 
+-- When each static_data table was last fetched (pis_lib.fetched). Here, so the dashboard can always read it.
+CREATE TABLE IF NOT EXISTS static_data.fetched (table_name text PRIMARY KEY, fetched_at timestamptz NOT NULL);
+
 -- Reset. pis_analyst keeps its rights where it is the owner: those can't be revoked.
 REVOKE ALL ON SCHEMA public FROM :"analyst", :"viewer";
 REVOKE ALL ON SCHEMA processed_data, static_data, published_data FROM :"viewer";
