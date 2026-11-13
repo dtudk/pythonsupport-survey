@@ -149,8 +149,8 @@ scrapes kurser.dtu.dk and writes:
 - `frontend/data/courses.json`: the survey's course autocomplete.
 - `frontend/data/courseSchedule.json`: the course buttons for the current weekday and half day,
   for the semester in `SEMESTER`.
-- `static_data.courses`: course names for the `course` column of `processed_responses`. It keeps
-  courses DTU no longer offers.
+- `static_data.courses`: course names and departments for the `course` and `department` columns
+  of `processed_responses`. It keeps courses DTU no longer offers.
 
 Run it on your machine, after `uv sync --group courses`, when DTU publishes next year's courses,
 and before each semester. It asks
