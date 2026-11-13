@@ -1,0 +1,15 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div id="content-main" class="app-list">
+  {% if perms.survey.view_satisfactionsurveyresponse %}
+  <div class="module">
+    <table>
+      <caption>Analysis</caption>
+      <tr><th scope="row"><a href="{% url 'dashboard' %}">Dashboard</a></th></tr>
+    </table>
+  </div>
+  {% endif %}
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}

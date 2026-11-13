@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="light">
+  <title>DTU Python Support Survey</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <meta http-equiv="Content-Security-Policy"
+        content="frame-src 'self'; child-src 'self'">
+
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/kiosk.css">
+  <link rel="stylesheet" href="./css/course-autocompleat.css">
+
+</head>
+
+<body class="bg-gray-50 min-h-screen flex">
+
+  <div id="sidebarContainer"></div>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+  <div id="mainWrapper" class="flex-1 flex flex-col">
+    <header class="h-16 flex items-center px-4 border-b bg-white">
+      <button id="openSidebar" class="text-gray-600 hover:text-gray-800 mr-3" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+      <h1 class="text-lg font-semibold text-gray-800">DTU Python Support Survey</h1>
+    </header>
+
+    <div id="modeSelectionContainer" class="hidden"></div>
+    <div id="buildingSelectionContainer" class="hidden"></div>
+    <div id="surveyContainer" class="hidden"></div>
+    <div id="problemLogContainer" class="hidden"></div>
+  </div>
+
+  <div id="offlineBadge" class="hidden fixed top-2 left-1/2 transform -translate-x-1/2 z-[900] bg-yellow-100 text-yellow-900 border border-yellow-400 text-sm px-4 py-1 rounded-full shadow">
+    Offline &mdash; responses are saved on this device
+  </div>
+
+  <div id="modalsContainer"></div>
+
+  <button id="kioskEnter" class="fab" aria-label="Enter tablet mode" title="Enter tablet mode">Enter Tablet mode</button>
+  <button id="kioskExit" aria-label="Exit tablet mode (tap 5 times)"></button>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

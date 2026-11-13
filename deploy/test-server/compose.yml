@@ -1,0 +1,16 @@
+# Usage (from this folder):
+#   podman-compose up -d --build           # boot a fresh "server"
+#   podman-compose exec server bash        # log in as root
+#   podman-compose down                    # wipe it; next `up` is a fresh server again
+services:
+  server:
+    build: .
+    hostname: survey-test
+    # Podman sees /sbin/init and gives systemd its tmpfs mounts and cgroups by itself. Never use
+    # privileged: it hands the container the host's devices, and its getty takes over the host's tty1.
+    ports:
+      - "8080:2810"           # the site: http://localhost:8080
+    volumes:
+      # Your checkout, read-only. Clone from it inside the container; it becomes `origin`,
+      # so manage.sh update deploys whatever you've committed locally.
+      - ../..:/mnt/repo:ro
