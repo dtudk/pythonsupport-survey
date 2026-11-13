@@ -1,19 +1,19 @@
 [
   {
     "name": "PG",
-    "points": 3,
+    "points": 4,
     "field": "name",
     "pattern": "polytechnical foundation"
   },
   {
     "name": "python",
-    "points": 2,
+    "points": 3,
     "field": null,
     "pattern": "\\bpython\\b"
   },
   {
     "name": "programming",
-    "points": 1,
+    "points": 2,
     "field": null,
     "pattern": "\\bprogramming\\b"
   },
